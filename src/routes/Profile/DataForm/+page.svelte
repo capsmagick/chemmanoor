@@ -7,7 +7,7 @@
     export let data: PageData;
 </script>
 
-<div class="container mx-auto py-10">
+<div class="mt-10">
   <UserDetailsForm { data }/>
   <UserParentDetails { data}/>
   <ChildrenDetails { data }/> 
