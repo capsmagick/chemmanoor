@@ -36,6 +36,7 @@
               <Card.Description>Here you can edit your profile details</Card.Description>
             </Card.Header>
             <Card.Content>
+
               <ul class="menu bg-base-100 w-56 p-2 rounded-box">
                 {#each navigation as navItem}
                   <li>
@@ -43,6 +44,7 @@
                   </li>
                 {/each}
               </ul>
+
             </Card.Content>
           </Card.Root>
         <p>Menu</p>
