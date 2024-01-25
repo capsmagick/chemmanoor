@@ -13,7 +13,7 @@
             </Card.Header>
             <Card.Content>
               <li>
-                <a href="">Profile</a>
+                <a href="/Profile">Profile</a>
               </li>
               <li>
                 <a href ="Address">Address</a>
