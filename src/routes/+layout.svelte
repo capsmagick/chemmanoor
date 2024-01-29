@@ -1,8 +1,81 @@
-<script>
+<script lang="ts">
 	import '../app.pcss';
 	import * as Avatar from "$lib/components/ui/avatar";
 	import * as Popover from "$lib/components/ui/popover";
+  import { onMount } from 'svelte';
+ import { session } from '$lib/stores/sessions';
+ import { goto } from '$app/navigation';
+ import { signOut } from 'firebase/auth';
+ import { auth } from '$lib/firebase/firebase.client';
+ import {
+      GoogleAuthProvider,
+      signInWithPopup,
+      signInWithEmailAndPassword,
+      type UserCredential
+     } from 'firebase/auth';
+
+ import type { LayoutData } from './$types';
+	import Button from '$lib/components/ui/button/button.svelte';
+ export let data: LayoutData;
+
+ let loading: boolean = true;
+ let loggedIn: boolean = false;
+ let user: any;
+
+ session.subscribe((cur: any) => {
+  loading = cur?.loading;
+  loggedIn = cur?.loggedIn;
+  user = cur?.user;
+ });
+
+ onMount(async () => {
+  const user: any = await data.getAuthUser();
+
+  const loggedIn = !!user && user?.emailVerified;
+  session.update((cur: any) => {
+   loading = false;
+   return {
+    ...cur,
+    user,
+    loggedIn,
+    loading: false
+   };
+  });
+  
+
+  if (loggedIn) {
+   goto('/');
+  }
+ });
+ async function loginWithGoogle() {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider)
+       .then((result) => {
+        const { displayName, email, photoURL, uid } = result?.user;
+        session.set({
+         loggedIn: true,
+         user: {
+          displayName,
+          email,
+          photoURL,
+          uid
+         }
+        });
+    
+        goto('/');
+       })
+       .catch((error) => {
+        return error;
+       });
+     }
+	const signOutUser = async () => {
+    await signOut(auth);
+    session.set({ loggedIn: false, user: null });
+    goto('/');
+  };
+
 </script>
+
 <nav class="bg-grey-800 shadow">
 	<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
 		<div class="relative flex h-16 items-center justify-between">
@@ -28,7 +101,8 @@
 						<a href="#" class="nav-link active" aria-current="page">Home</a>
 						<a href="#" class="nav-link">About</a>
 						<a href="#" class="nav-link">History</a>
-						<a href="/Login" class="nav-link">Login</a>
+						<!-- <a href="/Login" class="nav-link">Login</a>
+                        <a href="/Register" class="nav-link">Register</a> -->
 					</div>
 				</div>
 			</div>
@@ -40,32 +114,42 @@
 					</svg>
 				</button>
 				<!-- Profile dropdown -->
+				{#if loggedIn}
 				<Popover.Root>
 					<Popover.Trigger>
-						<Avatar.Root>
-							<Avatar.Image src="https://github.com/shadcn.png" alt="@shadcn" />
-							<Avatar.Fallback>CN</Avatar.Fallback>
-						</Avatar.Root>
+						<div class="flex items-center">
+							<span class="mx-5">{$session.user?.displayName}</span>
+							<Avatar.Root>
+								<Avatar.Image src={$session.user?.photoURL} alt={$session.user?.displayName} />
+								<Avatar.Fallback>CN</Avatar.Fallback>
+							</Avatar.Root>
+						</div>
 					</Popover.Trigger>
 					<Popover.Content>
-						<a href="/Profile" class="dropdown-item">Profile</a>
-						<a href="/Profile/DataForm" class="dropdown-item">Settings</a>
-						<a href="#" class="dropdown-item">Sign out</a>
+						<a href="/Profile" class="dropdown-item">Profile</a><br>				       
+						<Button variant="outline" on:click={signOutUser} class="dropdown-item">Sign Out</Button>
 					</Popover.Content>
 				</Popover.Root>
+				{:else}
+				<Button variant="outline" on:click={loginWithGoogle} class="login-button">Login</Button>
+				{/if}
+				
 			</div>
 		</div>
 	</div>
 	<!-- Mobile menu, show/hide based on menu state. -->
-	<div class="mobile-menu" id="mobile-menu">
+	<div class="mobile-menu sm:hidden" id="mobile-menu">
 		<div class="mobile-menu-items">
 			<a href="#" class="mobile-menu-item active" aria-current="page">Home</a>
 			<a href="#" class="mobile-menu-item">About</a>
 			<a href="#" class="mobile-menu-item">History</a>
-			<a href="#" class="mobile-menu-item">Login</a>
+			<!-- <a href="/Login" class="mobile-menu-item">Login</a>
+			<a href="/Register" class="mobile-menu-item">Register</a> -->
 		</div>
 	</div>
 </nav>
 
-<slot />
+   <slot />
+
+
 
