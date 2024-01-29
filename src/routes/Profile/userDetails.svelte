@@ -6,6 +6,7 @@
     import { Checkbox } from "$lib/components/ui/checkbox";
     import { Label } from "$lib/components/ui/label"; 
 	import Button from '$lib/components/ui/button/button.svelte';
+  import * as Avatar from "$lib/components/ui/avatar";
 
     let checked = false;
     export let data: PageData;
@@ -59,6 +60,17 @@
         <Card.Content>
             <form>
                 <div class="p-4 mb-4">
+                  <div class="form-control w-full max-w-lg">
+                    <Label for="avatar" class="label font-medium pb-1">
+                      <span class="label-text">Profile Picture</span>
+                    </Label>
+                    <Label for="avatar" class="avatar w-32 rounded-full hover:cursor-pointer">
+                      <div class="w-6/12 sm:w-4/12 px-4">
+                        <img src="https://github.com/shadcn.png" alt="user avatar" class="shadow rounded-full max-w-full h-auto align-middle border-none">
+                      </div>
+                    </Label>
+                    <Input type="file" name="avatar" id="avatar" value="" accept="image/*" hidden />
+                  </div>
                     <div class="grid grid-cols-4 gap-4 mt-2">
                             <div class="flex flex-col space-y-1.5">
                                 <Label for="status">Prefix(ഉപസർഗ്ഗം)</Label>
@@ -102,7 +114,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="raw-span-3 mt-3">
+                        <div class="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                          <div class="raw-span-3">
                             <Label for="status">Branch Details (ശാഖ) according to Directory</Label>
                             <div class="grid grid-cols-3 gap-4">
                                 <div class="flex flex-col space-y-1.5">
@@ -155,12 +168,11 @@
                                 </div>
                             </div>
                         </div>
+                        </div>         
                       </div>
                 </div>
+                <Button class="w-40 bg-blue-500 hover:bg-blue-700 text-white">Submit</Button>
               </form>
         </Card.Content>
-        <Card.Footer class="flex justify-center">
-          <Button class="w-40 bg-blue-500 hover:bg-blue-700 text-white">Submit</Button>
-        </Card.Footer>
     </Card.Root>
 </div>
