@@ -27,16 +27,6 @@
       }
     ];
 
-    console.log(prefix[0])
-    
-    function handleAddChildrenClick() {
-        numChildren++;
-    }
-    
-    function handleCloseClick() {
-        numChildren--;
-    }
-
     let selectedPrefix = prefix[0].value;
 
     function handlePrefixChange(event: CustomEvent<{ value: string }>) {
