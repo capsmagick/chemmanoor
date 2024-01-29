@@ -11,16 +11,16 @@
     export let data: PageData;
 </script>
 <div class="mt-10">
-    <Card.Root class="w-[870px] mx-auto">
+    <Card.Root class="w-[870px]">
         <Card.Header>
           <Card.Title>Contact Details</Card.Title>
         </Card.Header>
         <Card.Content>
             <form>
                 <div class="p-4 mb-4">
-                    <dev class="grid grid-cols-3 gap-4">
+                    <dev class="grid grid-cols-4 gap-4">
                         <dev>
-                            <Label for="email">Email Address(ഇമെയിൽ വിലാസം)</Label>
+                            <Label for="email">Email</Label>
                             <Input id="email" type="email" placeholder="E.g. john@doe.com"/>
                         </dev>
                         <dev>
@@ -31,6 +31,10 @@
                             <Label for="phone2">Phone 2</Label>
                             <Input id="phone2" type="number" placeholder="E.g. +91 300 400 5000"/>
                         </dev>
+                        <div>
+                            <Label for="parish">Parish(ഇടവക)</Label>
+                            <Input id="parish" placeholder="E.g. Pavaratty"/>
+                        </div>
                     </dev>
                     <dev>
                         <Label for="address1">Address 1</Label>

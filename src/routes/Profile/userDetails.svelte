@@ -53,7 +53,7 @@
 </script>
 
 <div class="mt-10">
-    <Card.Root class="w-[950px] mx-auto">
+    <Card.Root class="w-[950px]">
         <Card.Header>
           <Card.Title>User Info</Card.Title>
         </Card.Header>

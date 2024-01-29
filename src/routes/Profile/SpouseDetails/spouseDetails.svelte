@@ -4,10 +4,9 @@
     import * as Card from "$lib/components/ui/card";
     import * as RadioGroup from "$lib/components/ui/radio-group";
     import { Input } from "$lib/components/ui/input";
-    import { Checkbox } from "$lib/components/ui/checkbox";
     import { Label } from "$lib/components/ui/label"; 
-	  import Button from '$lib/components/ui/button/button.svelte';
-	  import { Plus, Minus, X } from "lucide-svelte";
+	import Button from '$lib/components/ui/button/button.svelte';
+	import { Plus, X } from "lucide-svelte";
 
     let checked: false;
     let numChildren = 1;
@@ -29,37 +28,6 @@
     ];
 
     console.log(prefix[0])
-
-    const chartNumberChild = [
-      {
-        value: "1C1",
-        label: "1C1"
-      },
-      {
-        value: "1C2",
-        label: "1C2"
-      }
-    ];
-    const generationChild = [
-      {
-        value: "A",
-        label: "A"
-      },
-      {
-        value: "B",
-        label: "B"
-      }
-    ];
-    const indexChild = [
-      {
-        value: "1",
-        label: "1"
-      },
-      {
-        value: "2",
-        label: "2"
-      }
-    ];
     
     function handleAddChildrenClick() {
         numChildren++;
@@ -77,27 +45,14 @@
 </script>
 
 <div>
-  <Button variant="outline" on:click={handleAddChildrenClick}>
-    <Plus class="mr-2 h-4 w-4"/>
-    Add Children
-  </Button>
 
-  {#each Array(numChildren) as _, index (index)}
-    <Card.Root class="w-[950px] mt-5 relative">
+    <Card.Root class="w-[950px]">
 
       <Card.Header>
         <Card.Title>
-          Children Details {index + 1}
+          Spouse Details
         </Card.Title>
       </Card.Header>
-
-      <div class="absolute top-2 right-2">
-        {#if index !== 0}
-          <Button variant="ghost" on:click={handleCloseClick}>
-            <X class="mr-2 h-4 w-4"/>
-          </Button>
-        {/if}
-      </div>
 
       <Card.Content>
 
@@ -150,25 +105,6 @@
               <Input id="emailOfChild" placeholder="john@doe.com"/>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-
-              <div class="raw-span-3 flex flex-col">
-                <Label>Sex(ലിംഗം)</Label>
-                <RadioGroup.Root class="mt-2" value="comfortable">
-                  <div class="flex items-center space-x-2">
-                    <RadioGroup.Item value="male" id="r1"/>
-                    <Label for="r1">Male</Label>
-                  </div>
-                  <div class="flex items-center space-x-2">
-                    <RadioGroup.Item value="female" id="r2"/>
-                    <Label for="r2">Female</Label>
-                  </div>
-                  <RadioGroup.Input name="spacing"/>
-                </RadioGroup.Root>
-              </div>
-  
-            </div>
-
           </div>
 
           <div class="mt-4">
@@ -180,7 +116,5 @@
       </Card.Content>
 
     </Card.Root>
-
-  {/each}
 
 </div>
