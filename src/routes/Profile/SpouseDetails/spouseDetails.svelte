@@ -49,7 +49,7 @@
           <div class="grid grid-cols-4 gap-4 mt-4">
 
             <div class="flex flex-col space-y-1.5 w-1/2">
-              <Label for="status">Prefix(ഉപസർഗ്ഗം)</Label>
+              <Label for="prefix">Prefix(ഉപസർഗ്ഗം)</Label>
               <Select.Root on:change={handlePrefixChange}>
                 <Select.Trigger id="prefix">
                   <Select.Value>{selectedPrefix === "mister" ? prefix[0].label : "Select"}</Select.Value> 
@@ -65,18 +65,18 @@
             </div>
 
             <div class="flex flex-col space-y-1.5">
-              <Label for="firstNameOfChild">First Name(ആദ്യനാമം)</Label>
-              <Input id="firstNameOfChild" placeholder="E.g. John Smith"/>
+              <Label for="firstNameOfSpouse">First Name(ആദ്യനാമം)</Label>
+              <Input id="firstNameOfSpouse" placeholder="E.g. John Smith"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
-              <Label for="middleNameOfChild">Middle Name(മധ്യനാമം)</Label>
-              <Input id="middleNameOfChild" placeholder="E.g. Daniel"/>
+              <Label for="middleNameOfSpouse">Middle Name(മധ്യനാമം)</Label>
+              <Input id="middleNameOfSpouse" placeholder="E.g. Daniel"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
-              <Label for="lastNameOfChild">Last Name(അവസാന നാമം)</Label>
-              <Input id="lastNameOfChild" placeholder="E.g. Chemmanoor"/>
+              <Label for="lastNameOfSpouse">Last Name(അവസാന നാമം)</Label>
+              <Input id="lastNameOfSpouse" placeholder="E.g. Chemmanoor"/>
             </div>
 
           </div>
@@ -84,13 +84,13 @@
           <div class="grid grid-cols-3 gap-4 mt-4">
 
             <div class="flex flex-col space-y-1.5">
-              <Label class="label" for="dateOfBirthOfChild">Date Of Birth(ജനന തീയതി)</Label>
-              <Input id="dateOfBirthChild" placeholder="12/10/95"/>
+              <Label class="label" for="dateOfBirthOfSpouse">Date Of Birth(ജനന തീയതി)</Label>
+              <Input id="dateOfBirthSpouse" placeholder="12/10/95"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
-              <Label for="emailOfChild">Email</Label>
-              <Input id="emailOfChild" placeholder="john@doe.com"/>
+              <Label for="emailOfSpouse">Email</Label>
+              <Input id="emailOfSpouse" placeholder="john@doe.com"/>
             </div>
 
           </div>

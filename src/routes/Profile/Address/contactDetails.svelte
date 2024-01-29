@@ -11,7 +11,7 @@
     export let data: PageData;
 </script>
 <div class="mt-10">
-    <Card.Root class="w-[870px]">
+    <Card.Root class="w-[950px]">
         <Card.Header>
           <Card.Title>Contact Details</Card.Title>
         </Card.Header>
