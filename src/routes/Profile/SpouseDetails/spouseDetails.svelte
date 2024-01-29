@@ -2,11 +2,9 @@
     import type { PageData } from "../$types";
     import * as Select from "$lib/components/ui/select";
     import * as Card from "$lib/components/ui/card";
-    import * as RadioGroup from "$lib/components/ui/radio-group";
     import { Input } from "$lib/components/ui/input";
     import { Label } from "$lib/components/ui/label"; 
 	import Button from '$lib/components/ui/button/button.svelte';
-	import { Plus, X } from "lucide-svelte";
 
     let checked: false;
     let numChildren = 1;
