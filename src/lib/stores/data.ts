@@ -1,6 +1,25 @@
 import { writable } from 'svelte/store';
 
-export const sessionStore = writable({
+export type UserData = {
+    uid:string;
+    prefix: string;
+    firstName: string;
+    middleName: string;
+    lastName: string;
+    profilePicture: string;
+    dob: string;
+    occupation: string;
+    chart: string;
+    gen: string;
+    index: string;
+    approvalStatus: string;
+    lifeMember: string;
+    sponsorStatus: string;
+  };
+
+
+export const UserStore = writable({
+  uid:'',
   prefix:'',
   firstName: '',
   middleName:'',
@@ -10,5 +29,8 @@ export const sessionStore = writable({
   occupation:'',
   chart:'',
   gen:'',
-  index:''  // ... other form fields
+  index:'', 
+  approvalStatus:'',
+  lifeMember:'',
+  sponsorStatus:''// ... other form fields
 });

@@ -2,20 +2,12 @@
 	import '../app.pcss';
 	import * as Avatar from "$lib/components/ui/avatar";
 	import * as Popover from "$lib/components/ui/popover";
-  import { onMount } from 'svelte';
- import { session } from '$lib/stores/sessions';
- import { goto } from '$app/navigation';
- import { signOut } from 'firebase/auth';
- import { auth } from '$lib/firebase/firebase.client';
- import {
-      GoogleAuthProvider,
-      signInWithPopup,
-      signInWithEmailAndPassword,
-      type UserCredential
-     } from 'firebase/auth';
-
- import type { LayoutData } from './$types';
-import Button from '$lib/components/ui/button/button.svelte';
+    import { onMount } from 'svelte';
+    import { session } from '$lib/stores/sessions';
+    import { goto } from '$app/navigation';
+    import { loginWithGoogle, signOutUser } from '$lib/firebase/auth';
+    import type { LayoutData } from './$types';
+    import Button from '$lib/components/ui/button/button.svelte';
 
 								
 
@@ -48,40 +40,16 @@ import Button from '$lib/components/ui/button/button.svelte';
   
 
   if (loggedIn) {
-   goto('/');
+  // No need to redirect if the user is already logged in
+   //goto('/');
   }
  });
- async function loginWithGoogle() {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider)
-       .then((result) => {
-        const { displayName, email, photoURL, uid } = result?.user;
-        session.set({
-         loggedIn: true,
-         user: {
-          displayName,
-          email,
-          photoURL,
-          uid
-         }
-        });
-    
-        goto('/');
-       })
-       .catch((error) => {
-        return error;
-       });
-     }
-	const signOutUser = async () => {
-    await signOut(auth);
-    session.set({ loggedIn: false, user: null });
-    goto('/');
-  };
- 
-</script>
 
-<nav class="bg-grey-800 shadow">
-	<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+  
+ </script>
+
+<nav>
+  <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
 		<div class="relative flex h-16 items-center justify-between">
 			<!-- Mobile menu button-->
 			<button type="button" class="mobile-menu-button" aria-controls="mobile-menu" aria-expanded="false">
