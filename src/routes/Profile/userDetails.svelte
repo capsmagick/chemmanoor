@@ -1,55 +1,70 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
     import type { PageData } from './$types';
     import * as Select from "$lib/components/ui/select";
     import * as Card from "$lib/components/ui/card";
     import { Input } from "$lib/components/ui/input";
     import { Checkbox } from "$lib/components/ui/checkbox";
     import { Label } from "$lib/components/ui/label"; 
-	import Button from '$lib/components/ui/button/button.svelte';
-  import * as Avatar from "$lib/components/ui/avatar";
+    import Button from '$lib/components/ui/button/button.svelte';
+    import { prefix, generation, chartNumber, index } from '$lib/constants/Profile';
+    import type { UserData } from '$lib/stores/data';
+    import { UserStore } from '$lib/stores/data';
+    import { manageUserStoreDocument, updateUserStoreDocument, readDocument } from '$lib/firebase/db';
+    import { session } from '$lib/stores/sessions';
+    import { getAuth } from 'firebase/auth';
+    import * as Avatar from "$lib/components/ui/avatar";
 
     let checked = false;
     export let data: PageData;
-    const prefix = [
-      {
-        value: "mister",
-        label: "Mr."
-      },
-      {
-        value: "missus",
-        label: "Mrs."
-      }
-    ];
-    const chartNumber = [
-      {
-        value: "1C1",
-        label: "1C1"
-      },
-      {
-        value: "1C2",
-        label: "1C2"
-      }
-    ];
-    const generation = [
-      {
-        value: "A",
-        label: "A"
-      },
-      {
-        value: "B",
-        label: "B"
-      }
-    ];
-    const index = [
-      {
-        value: "1",
-        label: "1"
-      },
-      {
-        value: "2",
-        label: "2"
-      }
-    ];
+    let userData: UserData;
+
+    onMount(async () => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+            const uid = user.uid;
+            const docData = await readDocument('user', uid);
+            if (docData) {
+                userData = docData;
+                UserStore.set(userData); // Update the UserStore with the fetched data
+            } else {
+                userData = {
+                    uid: '',
+                    prefix: '',
+                    firstName: '',
+                    middleName: '',
+                    lastName: '',
+                    profilePicture: '',
+                    dob: '',
+                    occupation: '',
+                    chart: '',
+                    gen: '',
+                    index: '',
+                    approvalStatus: '',
+                    lifeMember: '',
+                    sponsorStatus: ''
+                };
+                await manageUserStoreDocument('users', uid, userData);
+            }
+        }
+    });
+
+    async function handleSubmit(event: SubmitEvent) {
+        event.preventDefault();
+        const formData = new FormData(event.target as HTMLFormElement);
+        const formProps = Object.fromEntries(formData);
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+            await updateUserStoreDocument('users', user.uid, { ...userData, ...formProps });
+        }
+    }
+    function updateUserData(property: keyof UserData, value: string) {
+        userData = { ...userData, [property]: value };
+    }
+
+    $: UserStore.subscribe(value => { userData = value; }); // Subscribe to UserStore changes
 </script>
 
 <div class="mt-10">
@@ -58,9 +73,9 @@
           <Card.Title>User Info</Card.Title>
         </Card.Header>
         <Card.Content>
-            <form method="post">
+            <form method="post" on:submit|preventDefault={handleSubmit}>
                 <div class="p-4 mb-4">
-                  <div class="form-control w-full max-w-lg">
+                  <!-- <div class="form-control w-full max-w-lg">
                     <Label for="avatar" class="label font-medium pb-1">
                       <span class="label-text">Profile Picture</span>
                     </Label>
@@ -69,8 +84,8 @@
                         <img src="https://github.com/shadcn.png" alt="user avatar" class="shadow rounded-full max-w-full h-auto align-middle border-none">
                       </div>
                     </Label>
-                    <Input type="file" name="avatar" id="avatar" value="" accept="image/*" hidden />
-                  </div>
+                    <Input type="file" name="profilePicture" id="profilePicture" value="" accept="image/*" hidden />
+                  </div> -->
                     <div class="grid grid-cols-4 gap-4 mt-2">
                             <div class="flex flex-col space-y-1.5">
                                 <Label for="status">Prefix(ഉപസർഗ്ഗം)</Label>
@@ -89,8 +104,8 @@
                                 </Select.Root>
                             </div>
                             <div class="flex flex-col space-y-1.5">
-                                <Label class="label" for="firstName">First Name(ആദ്യനാമം)<span class="text-red-500">*</span></Label>
-                                <Input id="firstName" name="firstName" type="text" placeholder="E.g. John" required />
+                              <Label class="label" for="firstName">First Name(ആദ്യനാമം)<span class="text-red-500">*</span></Label>
+                              <Input bind:value={userData.firstName} id="firstName" name="firstName" type="text" placeholder="E.g. John" required on:input={() => updateUserData('firstName', userData.firstName)} />
                             </div>
                             <div class="flex flex-col space-y-1.5">
                                 <Label for="middleName">Middle Name(മധ്യനാമം)</Label>

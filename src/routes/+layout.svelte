@@ -2,20 +2,16 @@
 	import '../app.pcss';
 	import * as Avatar from "$lib/components/ui/avatar";
 	import * as Popover from "$lib/components/ui/popover";
-  import { onMount } from 'svelte';
- import { session } from '$lib/stores/sessions';
- import { goto } from '$app/navigation';
- import { signOut } from 'firebase/auth';
- import { auth } from '$lib/firebase/firebase.client';
- import {
-      GoogleAuthProvider,
-      signInWithPopup,
-      signInWithEmailAndPassword,
-      type UserCredential
-     } from 'firebase/auth';
+    import { onMount } from 'svelte';
+    import { session } from '$lib/stores/sessions';
+    import { goto } from '$app/navigation';
+    import { loginWithGoogle, signOutUser } from '$lib/firebase/auth';
+    import type { LayoutData } from './$types';
+    import Button from '$lib/components/ui/button/button.svelte';
 
- import type { LayoutData } from './$types';
-	import Button from '$lib/components/ui/button/button.svelte';
+								
+
+	
  export let data: LayoutData;
 
  let loading: boolean = true;
@@ -44,40 +40,16 @@
   
 
   if (loggedIn) {
-   goto('/');
+  // No need to redirect if the user is already logged in
+   //goto('/');
   }
  });
- async function loginWithGoogle() {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider)
-       .then((result) => {
-        const { displayName, email, photoURL, uid } = result?.user;
-        session.set({
-         loggedIn: true,
-         user: {
-          displayName,
-          email,
-          photoURL,
-          uid
-         }
-        });
-    
-        goto('/');
-       })
-       .catch((error) => {
-        return error;
-       });
-     }
-	const signOutUser = async () => {
-    await signOut(auth);
-    session.set({ loggedIn: false, user: null });
-    goto('/');
-  };
 
-</script>
+  
+ </script>
 
-<nav class="bg-grey-800 shadow">
-	<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+<nav>
+  <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
 		<div class="relative flex h-16 items-center justify-between">
 			<!-- Mobile menu button-->
 			<button type="button" class="mobile-menu-button" aria-controls="mobile-menu" aria-expanded="false">
@@ -113,12 +85,15 @@
 						<path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
 					</svg>
 				</button>
+				</div>
+				<div>
 				<!-- Profile dropdown -->
 				{#if loggedIn}
 				<Popover.Root>
 					<Popover.Trigger>
 						<div class="flex items-center">
 							<span class="mx-5">{$session.user?.displayName}</span>
+							
 							<Avatar.Root>
 								<Avatar.Image src={$session.user?.photoURL} alt={$session.user?.displayName} />
 								<Avatar.Fallback>CN</Avatar.Fallback>
@@ -134,7 +109,7 @@
 				<Button variant="outline" on:click={loginWithGoogle} class="login-button">Login</Button>
 				{/if}
 				
-			</div>
+			
 		</div>
 	</div>
 	<!-- Mobile menu, show/hide based on menu state. -->
