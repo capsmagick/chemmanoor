@@ -10,6 +10,10 @@
         href: '/Profile'
       },
       {
+        title: 'Address',
+        href: '/Profile/Address'
+      },
+      {
         title: 'Spouse Details',
         href: '/Profile/SpouseDetails'
       },
@@ -20,10 +24,6 @@
       {
         title: 'Children Details',
         href: '/Profile/ChildrensDetails'
-      },
-      {
-        title: 'Address',
-        href: '/Profile/Address'
       },
       {
         title: 'Data Form',
