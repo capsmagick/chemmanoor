@@ -58,7 +58,7 @@
           <Card.Title>User Info</Card.Title>
         </Card.Header>
         <Card.Content>
-            <form>
+            <form method="post">
                 <div class="p-4 mb-4">
                   <div class="form-control w-full max-w-lg">
                     <Label for="avatar" class="label font-medium pb-1">
@@ -75,7 +75,7 @@
                             <div class="flex flex-col space-y-1.5">
                                 <Label for="status">Prefix(ഉപസർഗ്ഗം)</Label>
                                 <Select.Root>
-                                  <Select.Trigger id="prefix">
+                                  <Select.Trigger id="prefix" name="prefix">
                                     <Select.Value>{prefix[0].label}</Select.Value>
                                   </Select.Trigger>
                                   <Select.Content>
@@ -90,15 +90,15 @@
                             </div>
                             <div class="flex flex-col space-y-1.5">
                                 <Label class="label" for="firstName">First Name(ആദ്യനാമം)<span class="text-red-500">*</span></Label>
-                                <Input id="firstName" placeholder="E.g. John" required />
+                                <Input id="firstName" name="firstName" type="text" placeholder="E.g. John" required />
                             </div>
                             <div class="flex flex-col space-y-1.5">
                                 <Label for="middleName">Middle Name(മധ്യനാമം)</Label>
-                                <Input id="middleName" placeholder="E.g. Daniel"/>
+                                <Input id="middleName" name="middleName" type="text" placeholder="E.g. Daniel"/>
                             </div>
                             <div class="flex flex-col space-y-1.5">
                                 <Label for="lastName">Last Name(അവസാന നാമം)</Label>
-                                <Input id="lastName" placeholder="E.g. Chemmanoor"/>
+                                <Input id="lastName" name="lastName" type="text" placeholder="E.g. Chemmanoor"/>
                             </div>
                     </div>
                       <div class="grid grid-cols-2 gap-4 mt-4">
@@ -106,11 +106,11 @@
                             <div class="grid grid-cols-2 gap-4 mt-4">
                                 <div class="flex flex-col space-y-1.5">
                                     <Label class="label" for="dateOfBirth">Date Of Birth(ജനന തീയതി)<span class="text-red-500">*</span></Label>
-                                    <Input id="dateOfBirth" placeholder="12/10/95" required />
+                                    <Input id="dateOfBirth" name="dateOfBirth" type="date" placeholder="12/10/95" required />
                                 </div>
                                 <div class="flex flex-col space-y-1.5">
                                     <Label for="occupation">Occupation(തൊഴിൽ)</Label>
-                                    <Input id="occupation" placeholder="E.g. Business"/>
+                                    <Input id="occupation" name="occupation" type="text" placeholder="E.g. Business"/>
                                 </div>
                             </div>
                         </div>
@@ -121,7 +121,7 @@
                                 <div class="flex flex-col space-y-1.5">
                                     <Label for="status">Chart Number</Label>
                                     <Select.Root>
-                                        <Select.Trigger id="chartNumber">
+                                        <Select.Trigger id="chartNumber" name="chartNumber">
                                           <Select.Value>{chartNumber[0].label}</Select.Value>
                                         </Select.Trigger>
                                         <Select.Content>
@@ -137,7 +137,7 @@
                                 <div class="flex flex-col space-y-1.5">
                                     <Label for="status">Generation</Label>
                                     <Select.Root>
-                                        <Select.Trigger id="generation">
+                                        <Select.Trigger id="generation" name="generation">
                                           <Select.Value>{generation[0].label}</Select.Value>
                                         </Select.Trigger>
                                         <Select.Content>
@@ -153,7 +153,7 @@
                                 <div class="flex flex-col space-y-1.5">
                                     <Label for="status">Index</Label>
                                     <Select.Root>
-                                        <Select.Trigger id="index">
+                                        <Select.Trigger id="index" name="index">
                                           <Select.Value>{index[0].label}</Select.Value>
                                         </Select.Trigger>
                                         <Select.Content>
@@ -171,7 +171,9 @@
                         </div>         
                       </div>
                 </div>
-                <Button class="w-40 bg-blue-500 hover:bg-blue-700 text-white">Submit</Button>
+                <Button class="w-40 bg-blue-500 hover:bg-blue-700 text-white" id="submit" name="submit" type="submit">
+                  Submit
+                </Button>
               </form>
         </Card.Content>
     </Card.Root>
