@@ -10,7 +10,7 @@
     import { prefix, generation, chartNumber, index } from '$lib/constants/Profile';
     import type { UserData } from '$lib/stores/data';
     import { UserStore } from '$lib/stores/data';
-    import { manageUserStoreDocument, updateUserStoreDocument, readDocument } from '$lib/firebase/db';
+    import { manageStoreDocument, updateStoreDocument, readDocument } from '$lib/firebase/db';
     import { session } from '$lib/stores/sessions';
     import { getAuth } from 'firebase/auth';
 
@@ -26,7 +26,7 @@
             const uid = user.uid;
             const docData = await readDocument('user', uid);
             if (docData) {
-                userData = docData;
+                userData = docData as UserData;
                 UserStore.set(userData); // Update the UserStore with the fetched data
             } else {
                 userData = {
@@ -45,7 +45,7 @@
                     lifeMember: '',
                     sponsorStatus: ''
                 };
-                await manageUserStoreDocument('users', uid, userData);
+                await manageStoreDocument('users', uid, userData,UserStore);
             }
         }
     });
@@ -62,7 +62,7 @@
         const auth = getAuth();
         const user = auth.currentUser;
         if (user) {
-            await updateUserStoreDocument('users', user.uid, { ...userData, ...formProps });
+            await updateStoreDocument('users', user.uid, { ...userData, ...formProps },UserStore);
         }
     }
     function updateUserData(property: keyof UserData, value: string) {

@@ -10,7 +10,7 @@
     import type { ContactData } from "$lib/stores/data";
     import { ContactStore } from '$lib/stores/data';
     import { getAuth } from 'firebase/auth';
-    import { manageContactStoreDocument, updateContactStoreDocument, readContactDocument } from '$lib/firebase/db';
+    import { manageStoreDocument, updateStoreDocument, readDocument } from '$lib/firebase/db';
 
     interface Country {
         country: string;
@@ -33,9 +33,9 @@
         const user = auth.currentUser;
         if (user) {
             const uid = user.uid;
-            const docuData = await readContactDocument('contact', uid);
+            const docuData = await readDocument('contact', uid);
             if (docuData) {
-                contactData = docuData;
+                contactData = docuData as ContactData;
                 ContactStore.set(contactData); // Update the UserStore with the fetched data
             } else {
                 contactData = {
@@ -51,7 +51,7 @@
                     zip: '',
                     country: '',
                 };
-                await manageContactStoreDocument('contact', uid, contactData);
+                await manageStoreDocument('contact', uid, contactData,ContactStore);
             }
         }
         try {
@@ -92,7 +92,7 @@
         const auth = getAuth();
         const user = auth.currentUser;
         if (user) {
-            await updateContactStoreDocument('contact', user.uid, { ...contactData, ...formProps });
+            await updateStoreDocument('contact', user.uid, { ...contactData, ...formProps },ContactStore);
         }
     }
 
