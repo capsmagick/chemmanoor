@@ -17,6 +17,20 @@ export type UserData = {
     sponsorStatus: string;
   };
 
+  export type ContactData = {
+    uid:string;
+    email: string;
+    phone1: string;
+    phone2: string;
+    parish: string;
+    address1: string;
+    address2: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
+
 
 export const UserStore = writable({
   uid:'',
@@ -34,3 +48,17 @@ export const UserStore = writable({
   lifeMember:'',
   sponsorStatus:''// ... other form fields
 });
+
+export const ContactStore = writable({
+  uid:'',
+  email: '',
+  phone1: '',
+  phone2: '',
+  parish: '',
+  address1: '',
+  address2: '',
+  city: '',
+  state: '',
+  zip: '',
+  country: ''
+  });
