@@ -13,11 +13,11 @@
     import { manageUserStoreDocument, updateUserStoreDocument, readDocument } from '$lib/firebase/db';
     import { session } from '$lib/stores/sessions';
     import { getAuth } from 'firebase/auth';
-    import * as Avatar from "$lib/components/ui/avatar";
 
     let checked = false;
     export let data: PageData;
     let userData: UserData;
+    let prefix2 = "";
 
     onMount(async () => {
         const auth = getAuth();
@@ -54,6 +54,11 @@
         event.preventDefault();
         const formData = new FormData(event.target as HTMLFormElement);
         const formProps = Object.fromEntries(formData);
+
+        console.log('Form Data:', formProps);
+        console.log('User Data:', userData);
+        console.log('prefix=', prefix2);
+
         const auth = getAuth();
         const user = auth.currentUser;
         if (user) {
@@ -65,6 +70,7 @@
     }
 
     $: UserStore.subscribe(value => { userData = value; }); // Subscribe to UserStore changes
+    
 </script>
 
 <div class="mt-10">
@@ -88,44 +94,74 @@
                   </div> -->
                     <div class="grid grid-cols-4 gap-4 mt-2">
                             <div class="flex flex-col space-y-1.5">
-                                <Label for="status">Prefix(ഉപസർഗ്ഗം)</Label>
-                                <Select.Root>
+                                <Label for="prefix">Prefix(ഉപസർഗ്ഗം)</Label>
+                                <!-- <Select.Root>
                                   <Select.Trigger id="prefix" name="prefix">
-                                    <Select.Value>{prefix[0].label}</Select.Value>
+                                    <Select.Value placeholder="Prefix"/>
                                   </Select.Trigger>
                                   <Select.Content>
-                                    {#each prefix as option}
-                                      <Select.Item value={option.value} 
-                                      label={option.label}>
-                                      {option.label}
-                                    </Select.Item>
-                                    {/each}
+                                    <Select.Group>
+                                      <Select.Label>prefix</Select.Label>
+                                      {#each prefix as prefix}
+                                        <Select.Item value={prefix.value} label={prefix.label}>
+                                          {prefix.label}
+                                        </Select.Item>
+                                      {/each}
+                                    </Select.Group>
                                   </Select.Content>
-                                </Select.Root>
+                                  <Select.Input name="prefix" id="prefix" />
+                                </Select.Root>   -->
+                                <select bind:value={prefix2} id="prefix" name="prefix" on:input={() => updateUserData('prefix', prefix2)}>
+                                  <option disabled selected value="">Prefix</option>
+                                   {#each prefix as prefix}
+                                    <option value={prefix.value}>
+                                       {prefix.label}
+                                    </option>
+                                    {/each}
+                                   </select>
                             </div>
                             <div class="flex flex-col space-y-1.5">
-                              <Label class="label" for="firstName">First Name(ആദ്യനാമം)<span class="text-red-500">*</span></Label>
-                              <Input bind:value={userData.firstName} id="firstName" name="firstName" type="text" placeholder="E.g. John" required on:input={() => updateUserData('firstName', userData.firstName)} />
+                              <Label class="label" for="firstName">First Name(ആദ്യനാമം)
+                                <span class="text-red-500">*</span>
+                              </Label>
+                              <Input bind:value={userData.firstName} id="firstName" name="firstName" 
+                              type="text" placeholder="E.g. John" 
+                              required on:input={() => updateUserData('firstName', userData.firstName)}/>
                             </div>
                             <div class="flex flex-col space-y-1.5">
-                                <Label for="middleName">Middle Name(മധ്യനാമം)</Label>
-                                <Input id="middleName" name="middleName" type="text" placeholder="E.g. Daniel"/>
+                                <Label for="middleName">
+                                  Middle Name(മധ്യനാമം)
+                                </Label>
+                                <Input bind:value={userData.middleName} id="middleName" name="middleName" 
+                                type="text" placeholder="E.g. Daniel"
+                                on:input={() => updateUserData('middleName', userData.middleName)}/>
                             </div>
                             <div class="flex flex-col space-y-1.5">
-                                <Label for="lastName">Last Name(അവസാന നാമം)</Label>
-                                <Input id="lastName" name="lastName" type="text" placeholder="E.g. Chemmanoor"/>
+                                <Label for="lastName">
+                                  Last Name(അവസാന നാമം)
+                                </Label>
+                                <Input bind:value={userData.lastName} id="lastName" name="lastName" 
+                                type="text" placeholder="E.g. Chemmanoor"
+                                on:input={() => updateUserData('lastName', userData.lastName)}/>
                             </div>
                     </div>
                       <div class="grid grid-cols-2 gap-4 mt-4">
                         <div class="raw-span-2 flex flex-raw items-center mt-4">
                             <div class="grid grid-cols-2 gap-4 mt-4">
                                 <div class="flex flex-col space-y-1.5">
-                                    <Label class="label" for="dateOfBirth">Date Of Birth(ജനന തീയതി)<span class="text-red-500">*</span></Label>
-                                    <Input id="dateOfBirth" name="dateOfBirth" type="date" placeholder="12/10/95" required />
+                                    <Label class="label" for="dob">
+                                      Date Of Birth(ജനന തീയതി)
+                                      <span class="text-red-500">*</span>
+                                    </Label>
+                                    <Input bind:value={userData.dob} id="dob" name="dob" 
+                                    type="date" placeholder="12/10/95" required 
+                                    on:input={() => updateUserData('dob', userData.dob)}/>
                                 </div>
                                 <div class="flex flex-col space-y-1.5">
                                     <Label for="occupation">Occupation(തൊഴിൽ)</Label>
-                                    <Input id="occupation" name="occupation" type="text" placeholder="E.g. Business"/>
+                                    <Input bind:value={userData.occupation} id="occupation" name="occupation" 
+                                    type="text" placeholder="E.g. Business"
+                                    on:input={() => updateUserData('occupation', userData.occupation)}/>
                                 </div>
                             </div>
                         </div>
@@ -136,8 +172,9 @@
                                 <div class="flex flex-col space-y-1.5">
                                     <Label for="status">Chart Number</Label>
                                     <Select.Root>
-                                        <Select.Trigger id="chartNumber" name="chartNumber">
-                                          <Select.Value>{chartNumber[0].label}</Select.Value>
+                                        <Select.Trigger
+                                         id="chartNumber" name="chartNumber">
+                                          <Select.Value>{chartNumber[0].value}</Select.Value>
                                         </Select.Trigger>
                                         <Select.Content>
                                           {#each chartNumber as option}
@@ -145,7 +182,9 @@
                                             label={option.label}>
                                             {option.label}
                                           </Select.Item>
+                                          {console.log('Option value:', option.value)}
                                           {/each}
+                                          {console.log('Selected value:', userData.chart)}
                                         </Select.Content>
                                       </Select.Root>
                                 </div>
@@ -153,7 +192,7 @@
                                     <Label for="status">Generation</Label>
                                     <Select.Root>
                                         <Select.Trigger id="generation" name="generation">
-                                          <Select.Value>{generation[0].label}</Select.Value>
+                                          <Select.Value>{generation[0].value}</Select.Value>
                                         </Select.Trigger>
                                         <Select.Content>
                                           {#each generation as option}
@@ -168,8 +207,9 @@
                                 <div class="flex flex-col space-y-1.5">
                                     <Label for="status">Index</Label>
                                     <Select.Root>
-                                        <Select.Trigger id="index" name="index">
-                                          <Select.Value>{index[0].label}</Select.Value>
+                                        <Select.Trigger 
+                                         id="index" name="index">
+                                          <Select.Value>{index[0].value}</Select.Value>
                                         </Select.Trigger>
                                         <Select.Content>
                                           {#each index as option}
