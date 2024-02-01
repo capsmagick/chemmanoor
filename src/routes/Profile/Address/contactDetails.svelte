@@ -38,19 +38,7 @@
                 contactData = docuData as ContactData;
                 ContactStore.set(contactData); // Update the UserStore with the fetched data
             } else {
-                contactData = {
-                    uid: '',
-                    email: '',
-                    phone1: '',
-                    phone2: '',
-                    parish: '',
-                    address1: '',
-                    address2: '',
-                    city: '',
-                    state: '',
-                    zip: '',
-                    country: '',
-                };
+                ContactStore.subscribe(value => { contactData = value; });
                 await manageStoreDocument('contact', uid, contactData,ContactStore);
             }
         }

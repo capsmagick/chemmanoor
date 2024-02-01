@@ -29,22 +29,7 @@
                 userData = docData as UserData;
                 UserStore.set(userData); // Update the UserStore with the fetched data
             } else {
-                userData = {
-                    uid: '',
-                    prefix: '',
-                    firstName: '',
-                    middleName: '',
-                    lastName: '',
-                    profilePicture: '',
-                    dob: '',
-                    occupation: '',
-                    chart: '',
-                    gen: '',
-                    index: '',
-                    approvalStatus: '',
-                    lifeMember: '',
-                    sponsorStatus: ''
-                };
+                UserStore.subscribe(value => { userData = value; });
                 await manageStoreDocument('users', uid, userData,UserStore);
             }
         }
