@@ -70,9 +70,9 @@
 				<div class="hidden sm:ml-6 sm:block">
 					<div class="flex space-x-4">
 						<!-- Navigation links -->
-						<a href="#" class="nav-link active" aria-current="page">Home</a>
-						<a href="#" class="nav-link">About</a>
-						<a href="#" class="nav-link">History</a>
+						<a href="/" class="nav-link active" aria-current="page">Home</a>
+						<a href="/AboutUs" class="nav-link">About</a>
+						<a href="/History" class="nav-link">History</a>
 						<!-- <a href="/Login" class="nav-link">Login</a>
                         <a href="/Register" class="nav-link">Register</a> -->
 					</div>
