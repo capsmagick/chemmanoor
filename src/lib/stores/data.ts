@@ -49,6 +49,7 @@ export const FatherStore = writable({
   chart:'',
   gen:'',
   index:'',
+  late: false,
 });
 
 export const MotherStore = writable({
@@ -62,6 +63,7 @@ export const MotherStore = writable({
   chart:'',
   gen:'',
   index:'',
+  late: false,
 });
 
 export const ChildrenStore = writable({

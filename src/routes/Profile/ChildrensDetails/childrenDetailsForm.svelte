@@ -14,13 +14,13 @@
     import { onMount } from'svelte';
 
     let numChildren = 1;
-    export let data: PageData;
+        export let data: PageData;
     let successMessage = '';
     let errorMessage = '';
     
     function handleAddChildrenClick() {
         numChildren++;
-    }
+            }
     
     function handleCloseClick() {
         numChildren--;
@@ -123,7 +123,7 @@
 
               <div class="raw-span-3 flex flex-col">
                 <Label for="sex">Sex(ലിംഗം)</Label>
-                <RadioGroup.Root class="mt-2" value="sex" id="sex">
+                <RadioGroup.Root class="mt-2" bind:value={$ChildrenStore.sex} id="sex">
                   <div class="flex items-center space-x-2">
                     <RadioGroup.Item value="male" id="male"/>
                     <Label for="male">Male</Label>
@@ -132,7 +132,7 @@
                     <RadioGroup.Item value="female" id="feamle"/>
                     <Label for="female">Female</Label>
                   </div>
-                  <RadioGroup.Input name="spacing"/>
+                  <RadioGroup.Input name="sex" type="radio" id="sex"/>
                 </RadioGroup.Root>
               </div>
   

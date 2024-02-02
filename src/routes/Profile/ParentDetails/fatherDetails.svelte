@@ -96,16 +96,18 @@
                             <Input bind:value={$FatherStore.dateOfBirthFather} id="dateOfBirthFather" name="dateOfBirthFather" type="date" placeholder="12/10/95"/>
                         </div>
                         <div class="flex items-center mt-5">
-                            <Checkbox id="terms" bind:checked/>
+                            <Checkbox id="terms" bind:checked={$FatherStore.late}/>
                             <Label for="terms" 
                                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                 Late
                             </Label>
                         </div>
-                        <div class="flex flex-col space-y-1.5">
-                            <Label class="label" for="dateOfDeathFather">Date of Death of Father(പിതാവിന്റെ മരണ തീയതി)</Label>
-                            <Input bind:value={$FatherStore.dateOfDeathFather} id="dateOfDeathFather" name="dateOfDeathFather" type="date" placeholder="12/10/95"/>
-                        </div>
+                        {#if $FatherStore.late}
+                            <div class="flex flex-col space-y-1.5">
+                                <Label class="label" for="dateOfDeathFather">Date of Death of Father(പിതാവിന്റെ മരണ തീയതി)</Label>
+                                <Input bind:value={$FatherStore.dateOfDeathFather} id="dateOfDeathFather" name="dateOfDeathFather" type="date" placeholder="12/10/95"/>
+                            </div>
+                        {/if}
                     </div>
                 </div>
                 <div class="flex justify-between items-center">
