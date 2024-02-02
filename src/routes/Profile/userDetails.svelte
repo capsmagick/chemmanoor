@@ -1,21 +1,17 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { writable } from 'svelte/store';
     import type { PageData } from './$types';
-    import * as Select from "$lib/components/ui/select";
     import * as Card from "$lib/components/ui/card";
     import { Input } from "$lib/components/ui/input";
     import { Label } from "$lib/components/ui/label"; 
     import Button from '$lib/components/ui/button/button.svelte';
-    import { prefix, generation, chartNumber, index } from '$lib/constants/dropdownOptions';
+    import { prefix } from '$lib/constants/dropdownOptions';
     import { UserStore } from '$lib/stores/data';
     import {populate, updateDbStore} from '$lib/Functions/dataHandlers';
     import FamilyIDSelector from '$lib/components/ui/familyIDSelector/familyIDSelector.svelte';
 	
 
-    let checked = false;
     export let data: PageData;
-    let prefix2 = "";
     let successMessage = '';
     let errorMessage = '';
     
@@ -34,8 +30,8 @@
         try {
             await updateDbStore(formData, UserStore, 'users');
             for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-    }
+              console.log(`${key}: ${value}`);
+            }
 
             //console.log(formData);
             successMessage = 'Updated successfully';
@@ -56,7 +52,7 @@
                     <div class="grid grid-cols-4 gap-4 mt-2">
                             <div class="flex flex-col space-y-1.5">
                                 <Label for="prefix">Prefix(ഉപസർഗ്ഗം)</Label>
-                                <select bind:value={prefix2} id="prefix" name="prefix" class="input input-bordered w-full max-w-xs">
+                                <select bind:value={$UserStore.prefix} id="prefix" name="prefix" class="input input-bordered w-full max-w-xs">
                                   <option disabled selected value="">Prefix</option>
                                    {#each prefix as prefix}
                                     <option value={prefix.value}>

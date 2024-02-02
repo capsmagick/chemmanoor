@@ -1,22 +1,6 @@
 import { writable } from 'svelte/store';
 
-  export type ContactData = {
-    uid:string;
-    email: string;
-    phone1: string;
-    phone2: string;
-    parish: string;
-    address1: string;
-    address2: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
-  };
-
-
 export const UserStore = writable({
-  uid:'',
   prefix:'',
   firstName: '',
   middleName:'',
