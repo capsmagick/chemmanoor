@@ -4,7 +4,6 @@
     import * as Select from "$lib/components/ui/select";
     import * as Card from "$lib/components/ui/card";
     import { Input } from "$lib/components/ui/input";
-    import { Checkbox } from "$lib/components/ui/checkbox";
     import { Label } from "$lib/components/ui/label"; 
     import Button from '$lib/components/ui/button/button.svelte';
     import { prefix, generation, chartNumber, index } from '$lib/constants/Profile';
