@@ -17,7 +17,6 @@ export const UserStore = writable({
 });
 
 export const ContactStore = writable({
-  uid:'',
   email: '',
   phone1: '',
   phone2: '',
@@ -29,3 +28,12 @@ export const ContactStore = writable({
   zip: '',
   country: ''
   });
+
+export const SpouseStore = writable({
+  prefix:'',
+  firstName: '',
+  middleName:'',
+  lastName: '',
+  dob:'',
+  email: '',
+});

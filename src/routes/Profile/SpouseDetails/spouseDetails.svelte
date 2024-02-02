@@ -1,35 +1,40 @@
 <script lang='ts'>
     import type { PageData } from "../$types";
-    import * as Select from "$lib/components/ui/select";
     import * as Card from "$lib/components/ui/card";
     import { Input } from "$lib/components/ui/input";
     import { Label } from "$lib/components/ui/label"; 
-	import Button from '$lib/components/ui/button/button.svelte';
+	  import Button from '$lib/components/ui/button/button.svelte';
+    import { prefix } from '$lib/constants/dropdownOptions';
+    import {populate, updateDbStore} from '$lib/Functions/dataHandlers';
+    import { SpouseStore } from "$lib/stores/data";
+	import { onMount } from "svelte";
 
-    let checked: false;
-    let numChildren = 1;
+    
+    let successMessage = '';
+    let errorMessage = '';
     export let data: PageData;
 
-    const prefix = [
-      {
-        value: "mister",
-        label: "Mr."
-      },
-      {
-        label: 'Ms.',
-        value: 'ms'
-      },
-      {
-        value: "missus",
-        label: "Mrs."
-      }
-    ];
+    onMount(async () => {
+      await populate(SpouseStore, "spouse");
+    });
 
-    let selectedPrefix = prefix[0].value;
+    async function handleSubmit(event: SubmitEvent) {
+        event.preventDefault();
+        const form = event.target as HTMLFormElement;
+        const formData = new FormData(form);
+        try {
+            await updateDbStore(formData, SpouseStore, 'spouse');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
 
-    function handlePrefixChange(event: CustomEvent<{ value: string }>) {
-        selectedPrefix = event.detail.value;
+            //console.log(formData);
+            successMessage = 'Updated successfully';
+        } catch (error: any) {
+            errorMessage = `Update failed: ${error.message}`;
+        }
     }
+
 </script>
 
 <div>
@@ -44,39 +49,35 @@
 
       <Card.Content>
 
-        <form>
+        <form method="post" on:submit|preventDefault={handleSubmit}>
 
           <div class="grid grid-cols-4 gap-4 mt-4">
 
             <div class="flex flex-col space-y-1.5 w-1/2">
               <Label for="prefix">Prefix(ഉപസർഗ്ഗം)</Label>
-              <Select.Root on:change={handlePrefixChange}>
-                <Select.Trigger id="prefix">
-                  <Select.Value>{selectedPrefix === "mister" ? prefix[0].label : "Select"}</Select.Value> 
-                </Select.Trigger>
-                <Select.Content>
-                  {#each prefix as option}
-                    <Select.Item value={option.value} label={option.label}>
-                      {option.label}
-                    </Select.Item>
-                  {/each}
-                </Select.Content>
-              </Select.Root>
+              <select bind:value={$SpouseStore.prefix} id="prefix" name="prefix" class="input input-bordered w-full max-w-xs">
+                <option disabled selected value="">Prefix</option>
+                 {#each prefix as prefix}
+                  <option value={prefix.value}>
+                     {prefix.label}
+                  </option>
+                 {/each}
+              </select>
             </div>
 
             <div class="flex flex-col space-y-1.5">
               <Label for="firstNameOfSpouse">First Name(ആദ്യനാമം)</Label>
-              <Input id="firstNameOfSpouse" placeholder="E.g. John Smith"/>
+              <Input bind:value={$SpouseStore.firstName} id="firstNameOfSpouse" name="firstNameOfSpouse" type="text" placeholder="E.g. John Smith"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
               <Label for="middleNameOfSpouse">Middle Name(മധ്യനാമം)</Label>
-              <Input id="middleNameOfSpouse" placeholder="E.g. Daniel"/>
+              <Input bind:value={$SpouseStore.middleName} id="middleNameOfSpouse" name="middleNameOfSpouse" type="text" placeholder="E.g. Daniel"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
               <Label for="lastNameOfSpouse">Last Name(അവസാന നാമം)</Label>
-              <Input id="lastNameOfSpouse" placeholder="E.g. Chemmanoor"/>
+              <Input bind:value={$SpouseStore.lastName} id="lastNameOfSpouse" name="lastNameOfSpouse" type="text" placeholder="E.g. Chemmanoor"/>
             </div>
 
           </div>
@@ -85,19 +86,32 @@
 
             <div class="flex flex-col space-y-1.5">
               <Label class="label" for="dateOfBirthOfSpouse">Date Of Birth(ജനന തീയതി)</Label>
-              <Input id="dateOfBirthSpouse" placeholder="12/10/95"/>
+              <Input bind:value={$SpouseStore.dob} id="dateOfBirthSpouse" name="dateOfBirthSpouse" type="date" placeholder="12/10/95"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
               <Label for="emailOfSpouse">Email</Label>
-              <Input id="emailOfSpouse" placeholder="john@doe.com"/>
+              <Input bind:value={$SpouseStore.email} id="emailOfSpouse" name="emailOfSpouse" type="email" placeholder="john@doe.com"/>
             </div>
 
           </div>
 
-          <div class="mt-4">
-            <Button class="w-40 bg-blue-500 hover:bg-blue-700 text-white">Submit</Button>
-          </div>
+          <div class="flex justify-between items-center mt-4">
+            <Button class="w-40 bg-blue-500 hover:bg-blue-700 text-white" type="submit">
+                Update
+            </Button>
+            {#if successMessage}
+              <div class="flex items-center text-green-500">
+                  <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  {successMessage}
+              </div>
+              {/if}
+              {#if errorMessage}
+                  <div class="text-red-500">
+                      {errorMessage}
+                  </div>
+              {/if}
+        </div>
 
         </form>
 
