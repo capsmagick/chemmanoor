@@ -67,17 +67,17 @@
 
             <div class="flex flex-col space-y-1.5">
               <Label for="firstNameOfSpouse">First Name(ആദ്യനാമം)</Label>
-              <Input bind:value={$SpouseStore.firstName} id="firstNameOfSpouse" name="firstNameOfSpouse" type="text" placeholder="E.g. John Smith"/>
+              <Input bind:value={$SpouseStore.firstNameOfSpouse} id="firstNameOfSpouse" name="firstNameOfSpouse" type="text" placeholder="E.g. John Smith"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
               <Label for="middleNameOfSpouse">Middle Name(മധ്യനാമം)</Label>
-              <Input bind:value={$SpouseStore.middleName} id="middleNameOfSpouse" name="middleNameOfSpouse" type="text" placeholder="E.g. Daniel"/>
+              <Input bind:value={$SpouseStore.middleNameOfSpouse} id="middleNameOfSpouse" name="middleNameOfSpouse" type="text" placeholder="E.g. Daniel"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
               <Label for="lastNameOfSpouse">Last Name(അവസാന നാമം)</Label>
-              <Input bind:value={$SpouseStore.lastName} id="lastNameOfSpouse" name="lastNameOfSpouse" type="text" placeholder="E.g. Chemmanoor"/>
+              <Input bind:value={$SpouseStore.lastNameOfSpouse} id="lastNameOfSpouse" name="lastNameOfSpouse" type="text" placeholder="E.g. Chemmanoor"/>
             </div>
 
           </div>
@@ -86,12 +86,12 @@
 
             <div class="flex flex-col space-y-1.5">
               <Label class="label" for="dateOfBirthOfSpouse">Date Of Birth(ജനന തീയതി)</Label>
-              <Input bind:value={$SpouseStore.dob} id="dateOfBirthSpouse" name="dateOfBirthSpouse" type="date" placeholder="12/10/95"/>
+              <Input bind:value={$SpouseStore.dateOfBirthSpouse} id="dateOfBirthSpouse" name="dateOfBirthSpouse" type="date" placeholder="12/10/95"/>
             </div>
 
             <div class="flex flex-col space-y-1.5">
               <Label for="emailOfSpouse">Email</Label>
-              <Input bind:value={$SpouseStore.email} id="emailOfSpouse" name="emailOfSpouse" type="email" placeholder="john@doe.com"/>
+              <Input bind:value={$SpouseStore.emailOfSpouse} id="emailOfSpouse" name="emailOfSpouse" type="email" placeholder="john@doe.com"/>
             </div>
 
           </div>

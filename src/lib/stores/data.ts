@@ -31,9 +31,45 @@ export const ContactStore = writable({
 
 export const SpouseStore = writable({
   prefix:'',
-  firstName: '',
-  middleName:'',
-  lastName: '',
-  dob:'',
-  email: '',
+  firstNameOfSpouse: '',
+  middleNameOfSpouse:'',
+  lastNameOfSpouse: '',
+  dateOfBirthSpouse:'',
+  emailOfSpouse: '',
+});
+
+export const FatherStore = writable({
+  prefix:'',
+  firstNameOfFather: '',
+  middleNameOfFather:'',
+  lastNameOfFather: '',
+  occupationOfFather:'',
+  dateOfBirthFather:'',
+  dateOfDeathFather:'',
+  chart:'',
+  gen:'',
+  index:'',
+});
+
+export const MotherStore = writable({
+  prefix:'',
+  firstNameOfMother: '',
+  middleNameOfMother:'',
+  lastNameOfMother: '',
+  occupationOfMother:'',
+  dateOfBirthMother:'',
+  dateOfDeathMother:'',
+  chart:'',
+  gen:'',
+  index:'',
+});
+
+export const ChildrenStore = writable({
+  prefix:'',
+  firstNameOfChild: '',
+  middleNameOfChild:'',
+  lastNameOfChild: '',
+  dateOfBirthChild:'',
+  emailOfChild: '',
+  sex:'',
 });
