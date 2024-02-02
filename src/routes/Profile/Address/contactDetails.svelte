@@ -11,6 +11,7 @@
     import { ContactStore } from '$lib/stores/data';
     import { getAuth } from 'firebase/auth';
     import { manageStoreDocument, updateStoreDocument, readDocument } from '$lib/firebase/db';
+    import { populate } from '$lib/Functions/dataHandlers';
 
     interface Country {
         country: string;
@@ -29,19 +30,8 @@
     let states: state[] = [];
 
     onMount(async () => {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user) {
-            const uid = user.uid;
-            const docuData = await readDocument('contact', uid);
-            if (docuData) {
-                contactData = docuData as ContactData;
-                ContactStore.set(contactData); // Update the UserStore with the fetched data
-            } else {
-                ContactStore.subscribe(value => { contactData = value; });
-                await manageStoreDocument('contact', uid, contactData,ContactStore);
-            }
-        }
+        await populate(ContactStore,'contact');
+ 
         try {
         const res = await fetch('https://countriesnow.space/api/v0.1/countries');
         if (!res.ok) {
@@ -85,10 +75,10 @@
     }
 
     function updateContactData(property: keyof ContactData, value: string) {
-        contactData = { ...contactData, [property]: value };
+        $ContactStore = { ...contactData, [property]: value };
     }
 
-    $: ContactStore.subscribe(value => { contactData = value; }); // Subscribe to UserStore changes
+    $: ContactStore.subscribe(value => {contactData = value; }); // Subscribe to UserStore changes
 
 </script>
 <div class="mt-10">

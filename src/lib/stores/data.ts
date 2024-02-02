@@ -1,22 +1,5 @@
 import { writable } from 'svelte/store';
 
-export type UserData = {
-    uid:string;
-    prefix: string;
-    firstName: string;
-    middleName: string;
-    lastName: string;
-    profilePicture: string;
-    dob: string;
-    occupation: string;
-    chart: string;
-    gen: string;
-    index: string;
-    approvalStatus: string;
-    lifeMember: string;
-    sponsorStatus: string;
-  };
-
   export type ContactData = {
     uid:string;
     email: string;
