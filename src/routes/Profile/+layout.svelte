@@ -28,6 +28,10 @@
       {
         title: 'Data Form',
         href: '/Profile/DataForm'
+      },
+      {
+        title: 'Myfamily',
+        href: '/Profile/myFamily'
       }
     ]
 </script>

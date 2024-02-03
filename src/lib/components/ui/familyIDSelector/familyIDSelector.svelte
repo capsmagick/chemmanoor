@@ -35,11 +35,11 @@
 </style>
 
 
-  <div class="family-id-selector">
+  <div class="family-id-selector ">
     <div>
-      <label for="chartNumber" class="block text-sm font-medium text-gray-700">Chart Number</label>
+      <label for="chartNumber" class="block text-sm font-medium text-gray-700">Chart</label>
       <select id="chartNumber" bind:value={chartNumberSelection} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-        <option value="">Select a chart number...</option>
+        <option value="">Select</option>
         {#each options.chartNumbers as { value, label }}
           <option value={value}>{label}</option>
         {/each}
@@ -49,7 +49,7 @@
     <div>
       <label for="generation" class="block text-sm font-medium text-gray-700">Generation</label>
       <select id="generation" bind:value={generationSelection} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-        <option value="">Select a generation...</option>
+        <option value="">Select</option>
         {#each options.generations as { value, label }}
           <option value={value}>{label}</option>
         {/each}
@@ -59,7 +59,7 @@
     <div>
       <label for="index" class="block text-sm font-medium text-gray-700">Index</label>
       <select id="index" bind:value={indexSelection} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-        <option value="">Select an index...</option>
+        <option value="">Select</option>
         {#each options.indexes as { value, label }}
           <option value={value}>{label}</option>
         {/each}

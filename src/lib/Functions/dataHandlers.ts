@@ -33,7 +33,7 @@ export async function populate(store:any ,collection: string) {
             store.set(data); // Update the UserStore with the fetched data
         } else {
             store.subscribe((value: typeof store) => { data = value; });
-            await manageStoreDocument('users', uid, data,store);
+            await manageStoreDocument(collection, uid, data,store);
         }
     }
     

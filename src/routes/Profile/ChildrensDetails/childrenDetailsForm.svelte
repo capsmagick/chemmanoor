@@ -29,37 +29,7 @@
     ];
 
     console.log(prefix[0])
-
-    const chartNumberChild = [
-      {
-        value: "1C1",
-        label: "1C1"
-      },
-      {
-        value: "1C2",
-        label: "1C2"
-      }
-    ];
-    const generationChild = [
-      {
-        value: "A",
-        label: "A"
-      },
-      {
-        value: "B",
-        label: "B"
-      }
-    ];
-    const indexChild = [
-      {
-        value: "1",
-        label: "1"
-      },
-      {
-        value: "2",
-        label: "2"
-      }
-    ];
+  
     
     function handleAddChildrenClick() {
         numChildren++;
