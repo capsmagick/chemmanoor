@@ -47,14 +47,14 @@
       .catch((error) => {
         message.set(`Error updating data: ${error.message}`);
       });
-  }
-
-  $: familyMember.subscribe(async (value) => {
-    if (value) {
-      await populate(formData, value);
-      await tick(); // Ensure UI is updated
     }
-  });
+    
+    $: familyMember.subscribe(async (value) => {
+      if (value) {
+        await populate(formData, value);
+        await tick(); // Ensure UI is updated
+      }
+    });
 </script>
 
 
