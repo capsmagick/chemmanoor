@@ -1,17 +1,12 @@
 <script lang="ts">
     import type { PageData } from './$types';
-    import * as Select from "$lib/components/ui/select";
     import * as Card from "$lib/components/ui/card";
     import { Input } from "$lib/components/ui/input";
-    import { Checkbox } from "$lib/components/ui/checkbox";
     import { Label } from "$lib/components/ui/label"; 
 	import Button from '$lib/components/ui/button/button.svelte';
     import { onMount } from'svelte';
-    import type { ContactData } from "$lib/stores/data";
     import { ContactStore } from '$lib/stores/data';
-    import { getAuth } from 'firebase/auth';
-    import { manageStoreDocument, updateStoreDocument, readDocument } from '$lib/firebase/db';
-    import { populate } from '$lib/Functions/dataHandlers';
+    import { populate, updateDbStore } from '$lib/Functions/dataHandlers';
 
     interface Country {
         country: string;
@@ -25,7 +20,8 @@
     }
 
     export let data: PageData;
-    let contactData: ContactData;
+    let successMessage = '';
+    let errorMessage = '';
     let countries: Country[] = [];
     let states: state[] = [];
 
@@ -61,24 +57,20 @@
 
     async function handleSubmit(event: SubmitEvent) {
         event.preventDefault();
-        const formData = new FormData(event.target as HTMLFormElement);
-        const formProps = Object.fromEntries(formData);
+        const form = event.target as HTMLFormElement;
+        const formData = new FormData(form);
+        try {
+            await updateDbStore(formData, ContactStore, 'contact');
+            for (let [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
 
-        console.log('Form Data:', formProps);
-        console.log('User Data:', contactData);
-
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user) {
-            await updateStoreDocument('contact', user.uid, { ...contactData, ...formProps },ContactStore);
+            //console.log(formData);
+            successMessage = 'Updated successfully';
+        } catch (error: any) {
+            errorMessage = `Update failed: ${error.message}`;
         }
     }
-
-    function updateContactData(property: keyof ContactData, value: string) {
-        $ContactStore = { ...contactData, [property]: value };
-    }
-
-    $: ContactStore.subscribe(value => {contactData = value; }); // Subscribe to UserStore changes
 
 </script>
 <div class="mt-10">
@@ -92,49 +84,49 @@
                     <dev class="grid grid-cols-4 gap-4">
                         <dev>
                             <Label for="email">Email</Label>
-                            <Input bind:value={contactData.email} id="email" name="email" type="email" placeholder="E.g. john@doe.com"/>
+                            <Input bind:value={$ContactStore.email} id="email" name="email" type="email" placeholder="E.g. john@doe.com"/>
                         </dev>
                         <dev>
                             <Label for="phone1">Phone</Label>
-                            <Input bind:value={contactData.phone1} id="phone1" name="phone1" type="number" placeholder="E.g. +91 300 400 5000"/>
+                            <Input bind:value={$ContactStore.phone1} id="phone1" name="phone1" type="number" placeholder="E.g. +91 300 400 5000"/>
                         </dev>
                         <dev>
                             <Label for="phone2">Phone 2</Label>
-                            <Input bind:value={contactData.phone2} id="phone2" name="phone2" type="number" placeholder="E.g. +91 300 400 5000"/>
+                            <Input bind:value={$ContactStore.phone2} id="phone2" name="phone2" type="number" placeholder="E.g. +91 300 400 5000"/>
                         </dev>
                         <div>
                             <Label for="parish">Parish(ഇടവക)</Label>
-                            <Input bind:value={contactData.parish} id="parish" name="parish" type="text" placeholder="E.g. Pavaratty"/>
+                            <Input bind:value={$ContactStore.parish} id="parish" name="parish" type="text" placeholder="E.g. Pavaratty"/>
                         </div>
                     </dev>
                     <dev>
                         <Label for="address1">Address 1</Label>
-                        <Input bind:value={contactData.address1} id="address1" name="address1" type="text" placeholder="E.g. 42 Wallaby Way"/>
+                        <Input bind:value={$ContactStore.address1} id="address1" name="address1" type="text" placeholder="E.g. 42 Wallaby Way"/>
                     </dev>
                     <dev>
                         <Label for="address2">Address 2</Label>
-                        <Input bind:value={contactData.address2} id="address2" name="address2" type="text" placeholder="E.g. Chemmanoor House"/>
+                        <Input bind:value={$ContactStore.address2} id="address2" name="address2" type="text" placeholder="E.g. Chemmanoor House"/>
                     </dev>
                     <dev class="grid grid-cols-2 gap-4">
                         <dev>
                             <Label for="city">City(നഗരം)</Label>
-                            <Input bind:value={contactData.city} id="city" name="city" type="text" placeholder="E.g. Thrissur"/>
+                            <Input bind:value={$ContactStore.city} id="city" name="city" type="text" placeholder="E.g. Thrissur"/>
                         </dev>
                         <dev>
                             <Label for="state">State/Province( സംസ്ഥാനം/പ്രവിശ്യ)</Label>
-                            <Input bind:value={contactData.state} id="state" name="state" type="text" placeholder="E.g. Kerala"/>
+                            <Input bind:value={$ContactStore.state} id="state" name="state" type="text" placeholder="E.g. Kerala"/>
                         </dev>
                     </dev>
                     <dev class="grid grid-cols-2 gap-4">
                         <dev>
                             <Label for="pincode">ZIP / Postal Code(തപാൽ കോഡ്)</Label>
-                            <Input bind:value={contactData.zip} id="pincode" name="pincode" type="number" placeholder="E.g. 680001"/>
+                            <Input bind:value={$ContactStore.zip} id="pincode" name="pincode" type="number" placeholder="E.g. 680001"/>
                         </dev>
                         <dev class="mt-5">
                             <div>
                                 <Label for="country">Country</Label>
                             </div>
-                            <select bind:value={contactData.country} id="country" name="country" on:change={handleCountryChange}>
+                            <select bind:value={$ContactStore.country} id="country" name="country" on:change={handleCountryChange}>
                                 <option disabled selected value="">Select a country</option>
                                 {#each countries as country}
                                 <option value={country.country}>
@@ -157,9 +149,22 @@
                         </div>
                     </div> -->
                 </div>
-                <Button class="w-40 bg-blue-500 hover:bg-blue-700 text-white" id="submit" name="submit" type="submit">
-                    Submit
-                </Button>
+                <div class="flex justify-between items-center">
+                    <Button class="w-40 bg-blue-500 hover:bg-blue-700 text-white" type="submit">
+                        Update
+                    </Button>
+                    {#if successMessage}
+                      <div class="flex items-center text-green-500">
+                          <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                          {successMessage}
+                      </div>
+                      {/if}
+                      {#if errorMessage}
+                          <div class="text-red-500">
+                              {errorMessage}
+                          </div>
+                      {/if}
+                </div>
             </form>
       </Card.Content>
 </Card.Root>

@@ -32,6 +32,10 @@
       {
         title: 'Myfamily',
         href: '/Profile/myFamily'
+      },
+      {
+        title: 'Admin',
+        href: '/Profile/Admin'
       }
     ]
 </script>

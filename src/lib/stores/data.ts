@@ -1,22 +1,6 @@
 import { writable } from 'svelte/store';
 
-  export type ContactData = {
-    uid:string;
-    email: string;
-    phone1: string;
-    phone2: string;
-    parish: string;
-    address1: string;
-    address2: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
-  };
-
-
 export const UserStore = writable({
-  uid:'',
   prefix:'',
   firstName: '',
   middleName:'',
@@ -33,7 +17,6 @@ export const UserStore = writable({
 });
 
 export const ContactStore = writable({
-  uid:'',
   email: '',
   phone1: '',
   phone2: '',
@@ -45,3 +28,50 @@ export const ContactStore = writable({
   zip: '',
   country: ''
   });
+
+export const SpouseStore = writable({
+  prefix:'',
+  firstNameOfSpouse: '',
+  middleNameOfSpouse:'',
+  lastNameOfSpouse: '',
+  dateOfBirthSpouse:'',
+  emailOfSpouse: '',
+});
+
+export const FatherStore = writable({
+  prefix:'',
+  firstNameOfFather: '',
+  middleNameOfFather:'',
+  lastNameOfFather: '',
+  occupationOfFather:'',
+  dateOfBirthFather:'',
+  dateOfDeathFather:'',
+  chart:'',
+  gen:'',
+  index:'',
+  late: false,
+});
+
+export const MotherStore = writable({
+  prefix:'',
+  firstNameOfMother: '',
+  middleNameOfMother:'',
+  lastNameOfMother: '',
+  occupationOfMother:'',
+  dateOfBirthMother:'',
+  dateOfDeathMother:'',
+  chart:'',
+  gen:'',
+  index:'',
+  late: false,
+});
+
+export const ChildrenStore = writable({
+  prefix:'',
+  firstNameOfChild: '',
+  middleNameOfChild:'',
+  lastNameOfChild: '',
+  dateOfBirthChild:'',
+  emailOfChild: '',
+  sex:'',
+});
