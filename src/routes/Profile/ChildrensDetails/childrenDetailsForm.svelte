@@ -14,9 +14,7 @@
     import { onMount } from'svelte';
 
     let numChildren = 1;
-        export let data: PageData;
-    let successMessage = '';
-    let errorMessage = '';
+
     
     function handleAddChildrenClick() {
         numChildren++;
