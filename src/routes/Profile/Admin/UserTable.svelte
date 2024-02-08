@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createTable, Render, Subscribe } from "svelte-headless-table";
-  import { addPagination, addSortBy, addTableFilter, addHiddenColumns, addSelectedRows } from "svelte-headless-table/plugins";
+  import { addPagination, addSortBy, addTableFilter, addHiddenColumns, addSelectedRows } 
+  from "svelte-headless-table/plugins";
   import { readable } from "svelte/store";
   import * as Table from "$lib/components/ui/table";
   import DataTableActions from "./UserActions.svelte";
@@ -25,7 +26,7 @@
   };
 
   // Initialize a writable store for the Firestore data
-  let dataStore = writable<UserData[]>([]);
+  let dataStore = writable<UserData[]>(JSON.parse(localStorage.getItem('userData') || '[]'));
 
   // Table configuration
   const tableConfig = {
@@ -41,21 +42,28 @@
   // Function to fetch data from Firestore
   async function printFirestoreCollection() {
       try {
-          const firestore = getFirestore();
-          const querySnapshot = await getDocs(collection(firestore, 'users'));
-          const newData = querySnapshot.docs.map(doc => {
-              const { firstName, middleName, lastName, email, date_of_entry } = doc.data();
+        let cachedData = localStorage.getItem('userData');
+        if (cachedData) {
+            // Use cached data if available
+            dataStore.set(JSON.parse(cachedData));
+            return;
+        }
+        const firestore = getFirestore();
+        const querySnapshot = await getDocs(collection(firestore, 'users'));
+        const newData = querySnapshot.docs.map(doc => {
+        const { firstName, middleName, lastName, email, date_of_entry } = doc.data();
               return {
                   id: doc.id,
                   firstName,
                   middleName,
                   lastName,
-                  date_of_entry: "", // You can set this value based on your requirement
+                  date_of_entry: "",
                   email,
               };
           });
           console.log('Data from Firestore:', newData);
           dataStore.set(newData);
+          localStorage.setItem('userData', JSON.stringify(newData));
       } catch (error) {
           console.log('Error fetching Firestore collection:', error);
       }
@@ -201,17 +209,9 @@
                       {#each row.cells as cell (cell.id)}
                         <Subscribe attrs={cell.attrs()} let:attrs>
                           <Table.Cell {...attrs}>
-                              {#if cell.id === "amount"}
-                              <div class="text-right font-medium">
-                                  <Render of={cell.render()} />
-                              </div>
-                              {:else if cell.id === "status"}
-                              <div class="capitalize">
-                                  <Render of={cell.render()} />
-                              </div>
-                              {:else}
-                              <Render of={cell.render()} />
-                              {/if}
+                              
+                            <Render of={cell.render()} />
+                              
                           </Table.Cell>
                         </Subscribe>
                       {/each}
