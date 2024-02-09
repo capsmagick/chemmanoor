@@ -54,45 +54,63 @@
       console.error("Error loading document: ", error);
     }
   }
-
   async function handleSelectChange(event: Event) {
-    const selectedMember = (event.target as HTMLSelectElement).value;
-    const userStoreValue = $UserStore[selectedMember];
-    console.log(`Selected family member: ${$FamilyStore[selectedMember]}`);
-  
-    // Check if the selectedMember already has an ID in FamilyStore
-    const existingMemberId = $FamilyStore[selectedMember];
-    console.log(`Existing member ID: ${existingMemberId}`);
-    selecteduser.set(existingMemberId);
-    selecteduser.subscribe(($selecteduser) => {
-      console.log(`Selected user ID: ${$selecteduser}`);
-    });
-  
-    if (!existingMemberId) {
-      // If there's no existing ID, generate a new one and proceed with the creation and update logic
-      const uniqueId = generateUniqueId();
-      await handleUserDocument(uniqueId); // Creates a document in the Users collection
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    const userID = $UserOnboard.UserID; // Assuming this is the ID of the current user's family document
 
-      const userID = $UserOnboard.UserID;
-      await updateMyFamilyCollection(userID, selectedMember, uniqueId)
-        .then(() => {
-          // Update FamilyStore selectedMember with the new uniqueId
-          FamilyStore.update(store => {
-            store[selectedMember] = uniqueId;
-            return store;
+    if (selectedValue.startsWith('child-')) {
+      const index = parseInt(selectedValue.split('-')[1], 10);
+      if (selectedValue === `child-${$FamilyStore.children.length}`) {
+        // "Add New Child" logic
+        const uniqueId = generateUniqueId();
+        await handleUserDocument(uniqueId); // Creates a document in the Users collection for the new child
+
+        // Update the family collection to add the new child
+        await updateMyFamilyCollection(userID, 'children', uniqueId)
+          .then(() => {
+            FamilyStore.update(store => {
+              store.children = [...store.children, uniqueId]; // Adding the new child's uniqueId to the children array
+              return store;
+            });
+            message.set('New child added successfully!');
+          })
+          .catch((error) => {
+            message.set(`Error adding new child: ${error.message}`);
           });
-          message.set('Family member added successfully!');
-        })
-        .catch((error) => {
-          message.set(`Error adding family member: ${error.message}`);
-        });
+        selecteduser.set(uniqueId); // Set the newly added child as the selected user
+      } else {
+        // Existing child selection logic
+        const existingMemberId = $FamilyStore.children[index];
+        selecteduser.set(existingMemberId); // Set the selected existing child as the selected user
+      }
     } else {
-      loadDataIntoUserStore();
-      // If there's already an existing ID, you might want to handle it differently
-      // For example, log a message or update the UI to reflect that the member is already added
-      console.log(`Family member ${selectedMember} is already added with ID: ${existingMemberId}`);
-      message.set(`Family member ${selectedMember} is already added.`);
+      // Logic for selecting or updating other family members
+      let memberType = selectedValue; // e.g., "mother", "father"
+      let existingMemberId = $FamilyStore[memberType];
+
+      if (!existingMemberId) {
+        // If the member does not exist, create a new ID and update accordingly
+        const uniqueId = generateUniqueId();
+        await handleUserDocument(uniqueId); // Potentially creates a new document for the member
+
+        await updateMyFamilyCollection(userID, memberType, uniqueId)
+          .then(() => {
+            FamilyStore.update(store => {
+              store[memberType] = uniqueId; // Update the FamilyStore with the new member ID
+              return store;
+            });
+            message.set(`New family member (${memberType}) added successfully!`);
+          })
+          .catch((error) => {
+            message.set(`Error adding family member (${memberType}): ${error.message}`);
+          });
+        selecteduser.set(uniqueId); // Set the newly added family member as the selected user
+      } else {
+        // If the member already exists, just load their information
+        selecteduser.set(existingMemberId); // Set the existing family member as the selected user
+      }
     }
+    loadDataIntoUserStore(); // Load the selected user's data into UserStore
   }
 
   async function submitForm(message: Writable<string>) {
@@ -112,9 +130,6 @@
   }
 </script>
 
-
-
-
 <div class ="m-20 shadow-lg p-10 max-w-prose">
   <form on:submit|preventDefault={(event) => submitForm(message)} class="space-y-6">
     <div class ="class= 'max-w-xs">
@@ -122,13 +137,16 @@
         // Set 'myself' as the default value without causing it to disappear or change without user intervention
       
       </script>
-      <select bind:value={$FamilyStore.selectedMember} on:change={handleSelectChange}>
-        <option value="myself">Myself</option>
-        <option value="mother">Mother</option>
-        <option value="father">Father</option>
-        <option value="lifePartner">Life Partner</option>
-        <option value="children">Children</option>
-      </select>
+  <select bind:value={$FamilyStore.selectedMember} on:change={handleSelectChange}>
+    <option value="myself">Myself</option>
+    <option value="mother">Mother</option>
+    <option value="father">Father</option>
+    <option value="lifePartner">Life Partner</option>
+    {#each $FamilyStore.children as child, index (child)}
+      <option value={`child-${index}`}>{`Child ${index + 1}`}</option>
+    {/each}
+    <option value={`child-${$FamilyStore.children.length}`}>Add New Child</option>
+  </select>
 </div>
 
   <div class="flex flex-col space-y-4">

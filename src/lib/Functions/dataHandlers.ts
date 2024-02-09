@@ -1,7 +1,7 @@
 import { getAuth } from 'firebase/auth';
 import { manageStoreDocument, updateStoreDocument, readDocument, createDocument, updateDocument } from '$lib/firebase/db';
 import {  UserStore, UserOnboard, FamilyStore } from '$lib/stores/data';
-import { doc, getFirestore, updateDoc } from 'firebase/firestore';
+import {arrayUnion, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import type { Writable } from 'svelte/store';
 import type { UserData } from '$lib/stores/data';
 
@@ -89,13 +89,27 @@ export async function checkUserOnboard(store: Writable<any>): Promise<void> {
  * @param memberType The type of the family member (e.g., "mother", "father").
  * @param uniqueId The unique ID generated for the new family member.
  */
-export async function updateMyFamilyCollection(userId: string, memberType: string, uniqueId: string): Promise<void> {
+export async function updateMyFamilyCollection(userId: string, memberTypeOrUniqueId: string, uniqueId?: string): Promise<void> {
+    const db = getFirestore();
+    const userDocRef = doc(db, 'myFamily', userId);
+
     try {
-      await updateDocument('myFamily', userId, { [memberType]: uniqueId });
-      console.log('MyFamily collection updated successfully');
+        if (uniqueId === undefined) {
+            // If uniqueId is not provided, we're updating a specific family member field
+            await updateDoc(userDocRef, {
+                [memberTypeOrUniqueId]: arrayUnion(memberTypeOrUniqueId)
+            });
+        } else {
+            // If uniqueId is provided, we're appending a new child to the children array
+            await updateDoc(userDocRef, {
+                [memberTypeOrUniqueId]: uniqueId,
+                children: arrayUnion(uniqueId) // Assuming you also want to keep track of all children IDs in a separate array
+            });
+        }
+        console.log('MyFamily collection updated successfully');
     } catch (error) {
-      console.error('Error updating MyFamily collection:', error);
-      throw error; // Rethrow the error to be handled by the caller
+        console.error('Error updating MyFamily collection:', error);
+        throw error; // Rethrow the error to be handled by the caller
     }
 }
 
