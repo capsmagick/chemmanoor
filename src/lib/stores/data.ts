@@ -1,6 +1,23 @@
 import { writable } from 'svelte/store';
+import type { Writable } from 'svelte/store';
 
-export const UserStore = writable({
+  export type ContactData = {
+    uid:string;
+    email: string;
+    phone1: string;
+    phone2: string;
+    parish: string;
+    address1: string;
+    address2: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
+
+
+export const UserStore: Writable<UserData> = writable({
+  userID:'',
   prefix:'',
   firstName: '',
   middleName:'',
@@ -8,12 +25,61 @@ export const UserStore = writable({
   profilePicture:'',
   dob:'',
   occupation:'',
+  relationshipStatus:'',
+  late:'',
+  phone:'',
+  email:'',
+  dateOfMarriage:'',
+  dateOfDeath:'',
   chart:'',
   gen:'',
   index:'', 
   approvalStatus:'',
   lifeMember:'',
   sponsorStatus:''// ... other form fields
+});
+export const UserOnboard = writable({
+  UserID:'',
+
+});
+export type UserData = {
+  userID: string;
+  prefix: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  profilePicture: string;
+  dob: string;
+  occupation: string;
+  relationshipStatus: string;
+  late: string;
+  phone: string;
+  email: string;
+  dateOfMarriage: string;
+  dateOfDeath: string;
+  chart: string;
+  gen: string;
+  index: string;
+  approvalStatus: string;
+  lifeMember: string;
+  sponsorStatus: string;
+}
+
+
+type FamilyData = {
+  myself: string;
+  father: string;
+  mother: string;
+  lifepartner: string;
+  children: string[]; // Changed from never[] to string[]
+};
+
+export const FamilyStore: Writable<FamilyData> = writable({
+  myself: '',
+  father: '',
+  mother: '',
+  lifepartner: '',
+  children: []
 });
 
 export const ContactStore = writable({
