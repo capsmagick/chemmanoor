@@ -83,7 +83,6 @@ export const FamilyStore: Writable<FamilyData> = writable({
 });
 
 export const ContactStore = writable({
-  uid:'',
   email: '',
   phone1: '',
   phone2: '',
@@ -95,3 +94,50 @@ export const ContactStore = writable({
   zip: '',
   country: ''
   });
+
+export const SpouseStore = writable({
+  prefix:'',
+  firstNameOfSpouse: '',
+  middleNameOfSpouse:'',
+  lastNameOfSpouse: '',
+  dateOfBirthSpouse:'',
+  emailOfSpouse: '',
+});
+
+export const FatherStore = writable({
+  prefix:'',
+  firstNameOfFather: '',
+  middleNameOfFather:'',
+  lastNameOfFather: '',
+  occupationOfFather:'',
+  dateOfBirthFather:'',
+  dateOfDeathFather:'',
+  chart:'',
+  gen:'',
+  index:'',
+  late: false,
+});
+
+export const MotherStore = writable({
+  prefix:'',
+  firstNameOfMother: '',
+  middleNameOfMother:'',
+  lastNameOfMother: '',
+  occupationOfMother:'',
+  dateOfBirthMother:'',
+  dateOfDeathMother:'',
+  chart:'',
+  gen:'',
+  index:'',
+  late: false,
+});
+
+export const ChildrenStore = writable({
+  prefix:'',
+  firstNameOfChild: '',
+  middleNameOfChild:'',
+  lastNameOfChild: '',
+  dateOfBirthChild:'',
+  emailOfChild: '',
+  sex:'',
+});

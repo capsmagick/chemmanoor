@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { chartNumber, generation, index } from '$lib/constants/dropdownOptions';
-  import  {Select, SelectTrigger, SelectLabel, SelectValue, SelectContent, SelectItem } from '$lib/components/ui/Select';
 
   export let chartNumberSelection = '';
   export let generationSelection = '';
