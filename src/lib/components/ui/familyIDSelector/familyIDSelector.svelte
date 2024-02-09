@@ -35,10 +35,10 @@
 </style>
 
 
-  <div class="family-id-selector ">
-    <div>
+  <div class="family-id-selector border-2 p-5 ">
+    <div class="">
       <label for="chartNumber" class="block text-sm font-medium text-gray-700">Chart</label>
-      <select id="chartNumber" bind:value={chartNumberSelection} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+      <select id="chartNumber" bind:value={chartNumberSelection} class="mt-1 border-2 p-2 block w-full text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
         <option value="">Select</option>
         {#each options.chartNumbers as { value, label }}
           <option value={value}>{label}</option>
@@ -48,7 +48,7 @@
 
     <div>
       <label for="generation" class="block text-sm font-medium text-gray-700">Generation</label>
-      <select id="generation" bind:value={generationSelection} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+      <select id="generation" bind:value={generationSelection} class="mt-1 block w-full text-base p-2 border-2 border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
         <option value="">Select</option>
         {#each options.generations as { value, label }}
           <option value={value}>{label}</option>
@@ -58,7 +58,7 @@
 
     <div>
       <label for="index" class="block text-sm font-medium text-gray-700">Index</label>
-      <select id="index" bind:value={indexSelection} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+      <select id="index" bind:value={indexSelection} class="mt-1 block w-full border-2 p-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
         <option value="">Select</option>
         {#each options.indexes as { value, label }}
           <option value={value}>{label}</option>
