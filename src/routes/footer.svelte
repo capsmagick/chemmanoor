@@ -9,11 +9,11 @@
                 </div>
             </div>
         </div>
-        <div class="md:text-center md:ml-8">
+        <div>
             <div>
                 <span class="text-gray-600 font-bold">Pages</span><br>
                 <a href="/" class="text-gray-500 hover:underline">Home</a><br/>
-                <a href="/About" class="text-gray-500 hover:underline">About Us</a><br/>
+                <a href="/AboutUs" class="text-gray-500 hover:underline">About Us</a><br/>
                 <a href="/History" class="text-gray-500 hover:underline">History</a><br/>
             </div>
         </div>
