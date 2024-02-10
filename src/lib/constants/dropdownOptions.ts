@@ -1,12 +1,6 @@
 export const prefix=[
-    {
-        value: "mister",
-        label: "Mr."
-      },
-      {
-        value: "missus",
-        label: "Mrs."
-      }
+  'Mr','Mrs','Ms','Miss','Madam',
+
     ];
    export const chartNumber = [
      '1','2','3'

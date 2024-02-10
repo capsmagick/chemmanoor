@@ -11,24 +11,34 @@
   import { FamilyStore } from '$lib/stores/data';
   import { UserOnboard,UserStore } from '$lib/stores/data';
   import { updateDocument}  from '$lib/firebase/db';
-  import { doc,getDoc,setDoc, getFirestore ,updateDoc} from 'firebase/firestore';
+  import { doc,getDoc,setDoc,arrayUnion, getFirestore ,updateDoc} from 'firebase/firestore';
   import type { Writable } from 'svelte/store';
+  import { prefix} from '$lib/constants/dropdownOptions'
+
   
   
   //export let data: PageData;
   const auth = getAuth();
   const user = auth.currentUser;
+  const db = getFirestore();
+  const prefixOptions = writable([]); // Store for dropdown options
+  let customPrefix = '';
   const message = writable('');
   const selecteduser = writable('');
+  let isCustomSelected = writable(false);
   
   onMount(async () => {
     if (user) {
+      fetchPrefixData();
       checkUserOnboard();
-      
+      prefixOptions.subscribe(options => {
+        console.log(options);
+      });
       selecteduser.set($UserOnboard.UserID);
       if ($FamilyStore.selectedMember === '') {
           $FamilyStore.selectedMember = 'myself';
         }
+      
       loadDataIntoUserStore();
     }
   });
@@ -117,7 +127,9 @@
     const db = getFirestore();
     const userID = $selecteduser; // Assuming selecteduser is a writable store containing the user's ID
     const userDocRef = doc(db, 'Users', userID);
-
+    if (customPrefix !== '') {
+      await addCustomPrefix();
+    }
     const userStoreValue = $UserStore; // Get the current value of the UserStore
 
     try {
@@ -128,17 +140,56 @@
       message.set(`Error updating user information: ${error.message}`);
     }
   }
+
+// Fetch prefixData from Firestore
+async function fetchPrefixData() {
+    const docRef = doc(db, 'constants', 'prefix');
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists() && Array.isArray(docSnap.data().prefixdata)) {
+        let options = docSnap.data().prefixdata;
+        // Check and add the current prefix if not present and not 'other'
+        if ($UserStore.prefix && $UserStore.prefix !== 'other' && !options.includes($UserStore.prefix)) {
+          options = [...options, $UserStore.prefix];
+        }
+        prefixOptions.set(options); // Trigger reactivity by assignment
+      } else {
+        console.log('No such document or invalid format!');
+      }
+    } catch (error) {
+      console.error("Error fetching prefix data:", error);
+    }
+  }
+  async function addCustomPrefix() {
+    const newPrefix = customPrefix.trim();
+    if (newPrefix) {
+      const docRef = doc(db, 'constants', 'prefix');
+      await updateDoc(docRef, {
+        prefixdata: arrayUnion(newPrefix) // Correct usage of arrayUnion
+      });
+      customPrefix = ''; // Reset custom prefix input
+      await fetchPrefixData(); // Refresh options
+      UserStore.update(store => {
+        store.prefix = newPrefix; // Update the UserStore with the new custom prefix
+        return store;
+      });
+      isCustomSelected.set(false);
+    }
+  }
+  $: if ($UserStore.prefix === 'other') {
+    isCustomSelected.set(true);
+  } else {
+    isCustomSelected.set(false);
+  }
+
 </script>
 
 <div class ="m-20 shadow-lg p-10 max-w-prose">
   <form on:submit|preventDefault={(event) => submitForm(message)} class="space-y-6">
     <div class ="class= 'max-w-xs">
-      <script>
-        // Set 'myself' as the default value without causing it to disappear or change without user intervention
-      
-      </script>
+    
   <select bind:value={$FamilyStore.selectedMember} on:change={handleSelectChange}>
-    <option value="myself">Myself</option>
+    <option value="myself" selected>Myself</option>
     <option value="mother">Mother</option>
     <option value="father">Father</option>
     <option value="lifePartner">Life Partner</option>
@@ -167,7 +218,18 @@
         <div class="grid grid-cols-4 gap-4">
             <div>
               <label for="prefix" class="block text-sm font-medium text-gray-700">Prefix</label>
-              <Input id="prefix" bind:value={$UserStore.prefix} placeholder="Prefix" class="max-w-xs" />
+              
+              <select class = ' max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'bind:value={$UserStore.prefix}>
+                  {#each $prefixOptions as option}
+                    <option value={option}>{option}</option>
+                  {/each}
+                  <option value="other">Custom</option>
+                </select>
+                
+                {#if $isCustomSelected}
+                  <Input bind:value={customPrefix} placeholder="Enter Custom Prefix" />
+                  <!-- Assuming you have a mechanism to add the custom prefix to both Firestore and prefixOptions -->
+                {/if}
             </div>
             <div>
               <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
@@ -202,10 +264,12 @@
                 </select>
               </div>
               <div class ="self-center">
-              <label for="late" class="flex mt-4  space-x-2">
-                <input id="late" type="checkbox" bind:checked={$UserStore.late} class="rounded text-indigo-600 focus:ring-indigo-500" />
-                <span class="text-sm font-medium text-gray-700">Late</span>
-              </label>
+              {#if $FamilyStore.selectedMember !== 'myself'}
+                <label for="late" class="flex mt-4 space-x-2">
+                  <input id="late" type="checkbox" bind:checked={$UserStore.late} class="rounded text-indigo-600 focus:ring-indigo-500" />
+                  <span class="text-sm font-medium text-gray-700">Late</span>
+                </label>
+              {/if}
 
               </div>
           </div>
