@@ -1,9 +1,16 @@
 <script lang="ts">
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
     import { Button } from "$lib/components/ui/button";
+    import { goto } from "$app/navigation";
     // import { DotsVertical } from "radix-icons-svelte";
     import { DotSquare } from "lucide-svelte";
     export let id: string;
+
+    function handleEditClick() {
+    // Navigate to the Edit User page
+    goto(`/Admin/EditUser`);
+    }
+    
   </script>
   <DropdownMenu.Root>
     <DropdownMenu.Trigger asChild let:builder>
@@ -21,9 +28,9 @@
       <DropdownMenu.Group>
         <DropdownMenu.Label>Actions</DropdownMenu.Label>
         <DropdownMenu.Item on:click={() => navigator.clipboard.writeText(id)}>
-          Copy payment ID
+          Copy Customer ID
         </DropdownMenu.Item>
-        <DropdownMenu.Item>Edit</DropdownMenu.Item>
+        <DropdownMenu.Item on:click={handleEditClick}>Edit</DropdownMenu.Item>
       </DropdownMenu.Group>
       <DropdownMenu.Separator />
       <DropdownMenu.Item>View User</DropdownMenu.Item>

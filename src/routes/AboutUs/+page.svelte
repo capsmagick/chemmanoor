@@ -15,16 +15,21 @@
     });
 </script>
 
-<section class="mt-8">
-    
-        <h2 class="text-xl font-semibold">About the Chemmanoor Family Community</h2>
-        <p class="text-md">{communityDetails}</p>
-    
-</section>
+<section class="mt-8  py-5 text-center" >
+    <h1 class="text-4xl text-cyan-500 font-bold">About</h1>
+    <p class="text-md pl-52 pr-52 text-center mt-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in mollis lorem. 
+        Nulla ac urna porttitor, ornare ligula id, volutpat arcu. Proin elementum ullamcorper maximus. 
+        Donec arcu ex, pulvinar tincidunt malesuada a, consectetur non ipsum. Integer ac massa mauris. 
+        Quisque ut orci eu justo eleifend lacinia non nec arcu. Donec consequat tincidunt augue, ut laoreet 
+        risus accumsan at. Nullam bibendum orci quis placerat molestie.<br/><br/>
 
-<section class="mt-8">
-    <Card>
-        <h2  class="text-xl font-semibold">History of the Community</h2>
-        <p  class="text-md">{communityHistory}</p>
-    </Card>
+        Aenean molestie massa fringilla, rutrum velit vel, efficitur lacus. Aenean euismod massa at turpis viverra, 
+        eget feugiat turpis tincidunt. Pellentesque in tortor hendrerit, hendrerit eros sit amet, feugiat dolor. 
+        Proin massa nisi, vulputate sit amet mollis consectetur, vestibulum sit amet mauris. Quisque sit amet 
+        tincidunt leo. Proin maximus orci nibh, et auctor elit lobortis sed. Aenean malesuada malesuada erat, 
+        et gravida metus interdum a. Donec varius dui at libero condimentum, id aliquam turpis sodales. 
+        Vivamus luctus quis mi et sodales. Curabitur faucibus quam quis turpis mattis, sit amet rutrum ex imperdiet.
+        Pellentesque ornare eleifend justo et aliquet. Mauris varius ultrices pellentesque. 
+        Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;</p>
+    
 </section>
