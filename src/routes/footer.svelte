@@ -1,4 +1,4 @@
-<footer class="footer bg-slate-100 text-gray-500 py-5">
+<footer class="footer bg-white text-gray-500 py-5">
     <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <div class="flex flex-col items-center md:items-start">
             <div class="flex flex-col items-center">

@@ -55,9 +55,9 @@
     }
 </style>
 
-<div class="container">
+<div class="bg-gray-100 w-full ">
 	<nav>
-		<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+		<div class="mx-auto bg-white max-w-full px-2 sm:px-6 lg:px-8">
 			<div class="relative flex h-16 items-center justify-between">
 				<!-- Mobile menu button-->
 				<button
@@ -145,10 +145,10 @@
 	</nav>
 	
 	<!-- Main content area -->
-    <div class="main-content">
+    <div class=" p-20">
         <slot />
     </div>
-
+	<Footer />
 </div>
 	
-<Footer />
+
