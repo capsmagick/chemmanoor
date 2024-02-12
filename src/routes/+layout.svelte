@@ -57,7 +57,7 @@
 
 <div class="bg-gray-100 w-full ">
 	<nav>
-		<div class="mx-auto bg-white max-w-full px-2 sm:px-6 lg:px-8">
+		<div class="mx-auto bg-white shadow-md max-w-full px-2 sm:px-6 lg:px-8">
 			<div class="relative flex h-16 items-center justify-between">
 				<!-- Mobile menu button-->
 				<button

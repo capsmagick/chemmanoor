@@ -34,6 +34,7 @@
   const user = auth.currentUser;
   const db = getFirestore(); // Store for dropdown options
   let customPrefix = '';
+  const selection = writable('Myself');
 
 
   
@@ -71,6 +72,8 @@
     
   <label for="familyMember" class="block text-sm font-medium text-gray-700">Select Family Member</label>
   <select id="familyMember"  on:change={handleSelectChange} class="max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+    
+    
     <option value="myself">Myself</option>
     <option value="mother">Mother</option>
     <option value="father">Father</option>
@@ -148,7 +151,7 @@
                 </select>
               </div>
               <div class ="self-center">
-              {#if $FamilyStore.selectedMember !== 'myself'}
+              {#if $selection !== 'Myself'}
                 <label for="late" class="flex mt-4 space-x-2">
                   <input id="late" type="checkbox" bind:checked={$UserStore.late} class="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span class="text-sm font-medium text-gray-700">Late</span>
@@ -167,7 +170,7 @@
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
             <Input id="email" bind:value={$UserStore.email} type="email" placeholder="Email" class="max-w-xs" />
           </div>
-          {#if $FamilyStore.selectedMember !== 'myself'}
+          {#if $selection !== 'Myself'}
             <div class="flex self-center mt-4">
               <Button class="max-w-xs" type="button">Invite</Button>
             </div>
