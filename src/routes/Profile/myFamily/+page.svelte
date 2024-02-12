@@ -184,11 +184,12 @@ async function fetchPrefixData() {
 
 </script>
 
-<div class ="m-20 shadow-lg p-10 max-w-prose">
+<div class ="m-20 shadow-md p-10 bg-white hover:shadow-lg rounded-xl max-w-screen-md">
   <form on:submit|preventDefault={(event) => submitForm(message)} class="space-y-6">
     <div class ="class= 'max-w-xs">
     
-  <select bind:value={$FamilyStore.selectedMember} on:change={handleSelectChange}>
+  <label for="familyMember" class="block text-sm font-medium text-gray-700">Select Family Member</label>
+  <select id="familyMember" bind:value={$FamilyStore.selectedMember} on:change={handleSelectChange} class="max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
     <option value="myself" selected>Myself</option>
     <option value="mother">Mother</option>
     <option value="father">Father</option>
@@ -283,9 +284,11 @@ async function fetchPrefixData() {
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
             <Input id="email" bind:value={$UserStore.email} type="email" placeholder="Email" class="max-w-xs" />
           </div>
-          <div class="flex self-center mt-4">
-            <Button class="max-w-xs" type="button">Invite</Button>
-          </div>
+          {#if $FamilyStore.selectedMember !== 'myself'}
+            <div class="flex self-center mt-4">
+              <Button class="max-w-xs" type="button">Invite</Button>
+            </div>
+          {/if}
 
           </div>
     <div class="grid grid-cols-4 gap-4">
