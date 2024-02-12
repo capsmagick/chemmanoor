@@ -1,6 +1,7 @@
 <footer class="footer bg-white text-gray-500 py-5">
     <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        <div class="flex flex-col items-center md:items-start">
+        <!-- Logo and Title -->
+        <div class="flex flex-col items-center">
             <div class="flex flex-col items-center">
                 <div class="placeholder h-20 w-20 bg-gray-600 rounded-full mr-2 mb-2"></div>
                 <div class="title text-2xl font-bold md:text-center">
@@ -9,23 +10,26 @@
                 </div>
             </div>
         </div>
-        <div>
-            <div>
+        <!-- Navigation Links -->
+        <div class="flex flex-col items-center mt-4 md:mt-0">
+            <div class="text-center md:text-left">
                 <span class="text-gray-600 font-bold">Pages</span><br>
                 <a href="/" class="text-gray-500 hover:underline">Home</a><br/>
                 <a href="/AboutUs" class="text-gray-500 hover:underline">About Us</a><br/>
                 <a href="/History" class="text-gray-500 hover:underline">History</a><br/>
             </div>
         </div>
-        <div>
-            <div>
+        <!-- Services Links -->
+        <div  class="flex flex-col items-center mt-4 md:mt-0">
+            <div class="text-center md:text-left">
                 <span class="text-gray-600 font-bold">Services</span><br>
                 <a href="#" class="text-gray-500 hover:underline">Terms of Service</a><br/>
                 <a href="#" class="text-gray-500 hover:underline">Privacy Policy</a>
             </div>
         </div>
-        <div>
-            <div>
+        <!-- Address and Contact -->
+        <div  class="flex flex-col items-center mt-4 md:mt-0">
+            <div class="text-center md:text-left">
                 <span class="text-gray-600 font-bold">Address</span><br>
                 <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
@@ -53,7 +57,9 @@
             </div>
         </div>
     </div>
+    <!-- Separator Line -->
     <div class="border-t border-gray-600 mt-4"></div>
+    <!-- Copyright -->
     <div class="copyright text-xs text-gray-500 text-center mt-2">
         <p>&copy;2024 Knowbin Technologies Pvt Ltd. All rights reserved.</p>
     </div>
