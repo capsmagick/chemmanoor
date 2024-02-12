@@ -26,7 +26,7 @@
   };
 
   // Initialize a writable store for the Firestore data
-  let dataStore = writable<UserData[]>(JSON.parse(localStorage.getItem('userData') || '[]'));
+  let dataStore = writable<UserData[]>([]);
 
   // Table configuration
   const tableConfig = {
@@ -42,14 +42,8 @@
   // Function to fetch data from Firestore
   async function printFirestoreCollection() {
       try {
-        let cachedData = localStorage.getItem('userData');
-        if (cachedData) {
-            // Use cached data if available
-            dataStore.set(JSON.parse(cachedData));
-            return;
-        }
         const firestore = getFirestore();
-        const querySnapshot = await getDocs(collection(firestore, 'users'));
+        const querySnapshot = await getDocs(collection(firestore, 'Users'));
         const newData = querySnapshot.docs.map(doc => {
         const { firstName, middleName, lastName, email, date_of_entry } = doc.data();
               return {
