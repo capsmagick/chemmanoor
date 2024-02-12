@@ -152,7 +152,7 @@
 <div>
   <div class="flex items-center py-4">
       <div>
-          <Input class="max-w-sm" placeholder="Filter emails..." type="text" bind:value={$filterValue}/>
+          <Input class="max-w-sm bg-white" placeholder="Filter emails..." type="text" bind:value={$filterValue}/>
       </div>
       <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild let:builder>
@@ -172,7 +172,7 @@
       </DropdownMenu.Root>
   </div>
   <div class="rounded-md border">
-      <Table.Root {...$tableAttrs}>
+      <Table.Root {...$tableAttrs} class="bg-white">
           <Table.Header>
               {#each $headerRows as headerRow}
                   <Subscribe rowAttrs={headerRow.attrs()}>
