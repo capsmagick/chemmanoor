@@ -18,11 +18,14 @@
   // Define the UserData type
   type UserData = {
       id: string;
+      prefix: string;
       firstName: string;
       middleName: string;
       lastName: string;
-      date_of_entry: string;
+      dob: string;
       email: string;
+      phone: string;
+      profilePicture: string;
   };
 
   // Initialize a writable store for the Firestore data
@@ -45,14 +48,17 @@
         const firestore = getFirestore();
         const querySnapshot = await getDocs(collection(firestore, 'Users'));
         const newData = querySnapshot.docs.map(doc => {
-        const { firstName, middleName, lastName, email, date_of_entry } = doc.data();
+        const { prefix, firstName, middleName, lastName, email, dob, phone, profilePicture } = doc.data();
               return {
                   id: doc.id,
+                  prefix,
                   firstName,
                   middleName,
                   lastName,
-                  date_of_entry: "",
+                  dob,
                   email,
+                  phone,
+                  profilePicture,
               };
           });
           console.log('Data from Firestore:', newData);
@@ -99,7 +105,14 @@
           }
       }),
       table.column({
-          accessor: ({ firstName, middleName, lastName }) => `${firstName} ${middleName} ${lastName}`.trim(),
+          accessor: "profilePicture",
+          header: "Photo",
+          cell: ({ value }) => {
+            return `<img src="${value}" alt="Profile Photo" class="h-10 w-10 rounded-full">`;
+            }
+      }),
+      table.column({
+          accessor: ({ prefix, firstName, middleName, lastName }) => `${prefix}. ${firstName} ${middleName} ${lastName}`.trim(),
           header: "Name"
       }),
       table.column({
@@ -107,8 +120,20 @@
           header: "Email"
       }),
       table.column({
-          accessor: "date_of_entry",
-          header: "Date Of Entry",
+          accessor: "dob",
+          header: "Date Of Birth",
+          plugins: {
+              sort: {
+                  disable: true
+              },
+              filter: {
+                  exclude: true
+              }
+          }
+      }),
+      table.column({
+          accessor: "phone",
+          header: "Phone",
           plugins: {
               sort: {
                   disable: true
@@ -146,13 +171,13 @@
       .filter(([, hide]) => !hide)
       .map(([id]) => id);
 
-  const hidableCols = ["name", "email", "date_of_entry"];
+  const hidableCols = ["name", "email", "dob", "phone"];
 </script>
 
 <div>
   <div class="flex items-center py-4">
       <div>
-          <Input class="max-w-sm bg-white" placeholder="Filter emails..." type="text" bind:value={$filterValue}/>
+          <Input class="max-w-sm bg-white" placeholder="Filter email..." type="text" bind:value={$filterValue}/>
       </div>
       <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild let:builder>
@@ -203,8 +228,12 @@
                       {#each row.cells as cell (cell.id)}
                         <Subscribe attrs={cell.attrs()} let:attrs>
                           <Table.Cell {...attrs}>
-                              
-                            <Render of={cell.render()} />
+                           
+                            {#if typeof cell.render() === 'string'}
+                                {@html cell.render()}
+                            {:else}
+                                <Render of={cell.render()}/> 
+                            {/if}
                               
                           </Table.Cell>
                         </Subscribe>
