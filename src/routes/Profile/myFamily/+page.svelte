@@ -1,7 +1,16 @@
 <script lang="ts">
   import { onMount, tick } from 'svelte';
   import { writable } from 'svelte/store';
-  import { updateMyFamilyCollection,handleUserDocument,updateDbStore, populate, generateUniqueId ,checkUserOnboard } from '$lib/Functions/dataHandlers';
+  import { updateMyFamilyCollection,
+           handleUserDocument,
+           updateDbStore,
+           populate,
+           generateUniqueId,
+           checkUserOnboard,
+           fetchPrefixData,
+           submitForm,
+           handleSelectChange,
+           loadDataIntoUserStore } from '$lib/Functions/dataHandlers';
   import * as Select from '$lib/components/ui/select';
   import { Input } from '$lib/components/ui/input';
   import Button from '$lib/components/ui/button/button.svelte';
@@ -9,173 +18,44 @@
   import { getAuth } from 'firebase/auth';
   import { session } from '$lib/stores/sessions';
   import { FamilyStore } from '$lib/stores/data';
-  import { UserOnboard,UserStore } from '$lib/stores/data';
+  import { isCustomSelected,selecteduser,UserOnboard,UserStore,prefixOptions,formMessage } from '$lib/stores/data';
   import { updateDocument}  from '$lib/firebase/db';
   import { doc,getDoc,setDoc,arrayUnion, getFirestore ,updateDoc} from 'firebase/firestore';
   import type { Writable } from 'svelte/store';
   import { prefix} from '$lib/constants/dropdownOptions'
+  import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+
 
   
   
   //export let data: PageData;
   const auth = getAuth();
   const user = auth.currentUser;
-  const db = getFirestore();
-  const prefixOptions = writable([]); // Store for dropdown options
+  const db = getFirestore(); // Store for dropdown options
   let customPrefix = '';
-  const message = writable('');
-  const selecteduser = writable('');
-  let isCustomSelected = writable(false);
+
+
   
   onMount(async () => {
+   
     if (user) {
-      fetchPrefixData();
-      checkUserOnboard();
-      prefixOptions.subscribe(options => {
-        console.log(options);
-      });
-      selecteduser.set($UserOnboard.UserID);
-      if ($FamilyStore.selectedMember === '') {
-          $FamilyStore.selectedMember = 'myself';
-        }
-      
+      checkUserOnboard(); 
       loadDataIntoUserStore();
     }
   });
+
   
-  async function loadDataIntoUserStore() {
-    const db = getFirestore();
-    const userID = $selecteduser; // Assuming selecteduser is a writable store containing the user's ID
-    if (!userID) {
-      console.error("No user ID provided");
-      return;
-    }
-    const userDocRef = doc(db, 'Users', userID);
-
-    try {
-      const docSnap = await getDoc(userDocRef);
-      if (docSnap.exists()) {
-        UserStore.set(docSnap.data());
-        console.log("User data loaded into UserStore successfully.");
-      } else {
-        console.log("No such document!");
-      }
-    } catch (error) {
-      console.error("Error loading document: ", error);
-    }
+  async function handleFormSubmit() {
+    const fileInput = document.getElementById('profilePhoto') as HTMLInputElement;
+    await submitForm(customPrefix, fileInput);
   }
-  async function handleSelectChange(event: Event) {
-    const selectedValue = (event.target as HTMLSelectElement).value;
-    const userID = $UserOnboard.UserID; // Assuming this is the ID of the current user's family document
-
-    if (selectedValue.startsWith('child-')) {
-      const index = parseInt(selectedValue.split('-')[1], 10);
-      if (selectedValue === `child-${$FamilyStore.children.length}`) {
-        // "Add New Child" logic
-        const uniqueId = generateUniqueId();
-        await handleUserDocument(uniqueId); // Creates a document in the Users collection for the new child
-
-        // Update the family collection to add the new child
-        await updateMyFamilyCollection(userID, 'children', uniqueId)
-          .then(() => {
-            FamilyStore.update(store => {
-              store.children = [...store.children, uniqueId]; // Adding the new child's uniqueId to the children array
-              return store;
-            });
-            message.set('New child added successfully!');
-          })
-          .catch((error) => {
-            message.set(`Error adding new child: ${error.message}`);
-          });
-        selecteduser.set(uniqueId); // Set the newly added child as the selected user
-      } else {
-        // Existing child selection logic
-        const existingMemberId = $FamilyStore.children[index];
-        selecteduser.set(existingMemberId); // Set the selected existing child as the selected user
-      }
-    } else {
-      // Logic for selecting or updating other family members
-      let memberType = selectedValue; // e.g., "mother", "father"
-      let existingMemberId = $FamilyStore[memberType];
-
-      if (!existingMemberId) {
-        // If the member does not exist, create a new ID and update accordingly
-        const uniqueId = generateUniqueId();
-        await handleUserDocument(uniqueId); // Potentially creates a new document for the member
-
-        await updateMyFamilyCollection(userID, memberType, uniqueId)
-          .then(() => {
-            FamilyStore.update(store => {
-              store[memberType] = uniqueId; // Update the FamilyStore with the new member ID
-              return store;
-            });
-            message.set(`New family member (${memberType}) added successfully!`);
-          })
-          .catch((error) => {
-            message.set(`Error adding family member (${memberType}): ${error.message}`);
-          });
-        selecteduser.set(uniqueId); // Set the newly added family member as the selected user
-      } else {
-        // If the member already exists, just load their information
-        selecteduser.set(existingMemberId); // Set the existing family member as the selected user
-      }
-    }
-    loadDataIntoUserStore(); // Load the selected user's data into UserStore
+   async function handleAddCustomPrefix() {
+    await addCustomPrefix(customPrefix);
+    customPrefix = ''; // Reset custom prefix input after the operation
   }
-
-  async function submitForm(message: Writable<string>) {
-    const db = getFirestore();
-    const userID = $selecteduser; // Assuming selecteduser is a writable store containing the user's ID
-    const userDocRef = doc(db, 'Users', userID);
-    if (customPrefix !== '') {
-      await addCustomPrefix();
-    }
-    const userStoreValue = $UserStore; // Get the current value of the UserStore
-
-    try {
-      await updateDoc(userDocRef, userStoreValue);
-      message.set('User information updated successfully!');
-    } catch (error) {
-      console.error('Error updating user information:', error);
-      message.set(`Error updating user information: ${error.message}`);
-    }
-  }
-
-// Fetch prefixData from Firestore
-async function fetchPrefixData() {
-    const docRef = doc(db, 'constants', 'prefix');
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists() && Array.isArray(docSnap.data().prefixdata)) {
-        let options = docSnap.data().prefixdata;
-        // Check and add the current prefix if not present and not 'other'
-        if ($UserStore.prefix && $UserStore.prefix !== 'other' && !options.includes($UserStore.prefix)) {
-          options = [...options, $UserStore.prefix];
-        }
-        prefixOptions.set(options); // Trigger reactivity by assignment
-      } else {
-        console.log('No such document or invalid format!');
-      }
-    } catch (error) {
-      console.error("Error fetching prefix data:", error);
-    }
-  }
-  async function addCustomPrefix() {
-    const newPrefix = customPrefix.trim();
-    if (newPrefix) {
-      const docRef = doc(db, 'constants', 'prefix');
-      await updateDoc(docRef, {
-        prefixdata: arrayUnion(newPrefix) // Correct usage of arrayUnion
-      });
-      customPrefix = ''; // Reset custom prefix input
-      await fetchPrefixData(); // Refresh options
-      UserStore.update(store => {
-        store.prefix = newPrefix; // Update the UserStore with the new custom prefix
-        return store;
-      });
-      isCustomSelected.set(false);
-    }
-  }
+ 
+  
   $: if ($UserStore.prefix === 'other') {
     isCustomSelected.set(true);
   } else {
@@ -185,12 +65,12 @@ async function fetchPrefixData() {
 </script>
 
 <div class ="m-20 shadow-md p-10 bg-white hover:shadow-lg rounded-xl max-w-screen-md">
-  <form on:submit|preventDefault={(event) => submitForm(message)} class="space-y-6">
+  <form on:submit|preventDefault={(event) => handleFormSubmit(formMessage)} class="space-y-6">
     <div class ="class= 'max-w-xs">
     
   <label for="familyMember" class="block text-sm font-medium text-gray-700">Select Family Member</label>
-  <select id="familyMember" bind:value={$FamilyStore.selectedMember} on:change={handleSelectChange} class="max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-    <option value="myself" selected>Myself</option>
+  <select id="familyMember"  on:change={handleSelectChange} class="max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+    <option value="myself">Myself</option>
     <option value="mother">Mother</option>
     <option value="father">Father</option>
     <option value="lifePartner">Life Partner</option>
@@ -204,9 +84,11 @@ async function fetchPrefixData() {
   <div class="flex flex-col space-y-4">
     <div class="flex justify-left space-x-10   items-center">
         <label for="profilePhoto" class="cursor-pointer size-30px relative">
-            <img src={$session.user?.photoURL || "https://github.com/shadcn.png"} alt="" class=" size-30px rounded-full object-cover" /> <!-- Removed descriptive alt text -->
+            <!-- <img src={$session.user?.photoURL || "https://github.com/shadcn.png"} alt="" class=" size-30px rounded-full object-cover" /> -->
+           <!-- Removed descriptive alt text -->
+            <img src={$UserStore.profilePicture || $session.user?.photoURL} alt="" class="max-h-40 max-w-40 size-40px rounded-full object-cover" />
             <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 px-2 py-1 text-white text-sm mb-2">Change</div>
-            <Input id="profilePhoto" bind:value={$UserStore.profilePicture} type="file" class="hidden" />
+            <Input id="profilePhoto"  type="file" class="hidden" />
           </label>
         
         <div ml-10>
@@ -313,7 +195,7 @@ async function fetchPrefixData() {
  
     <Button class= 'max-w-xs' type="submit">Update</Button>
   
-  <p class="text-sm mt-2">{$message}</p>
+  <p class="text-sm mt-2">{$formMessage}</p>
 </form>
 </div>
 

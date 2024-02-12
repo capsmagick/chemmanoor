@@ -14,8 +14,9 @@ import type { Writable } from 'svelte/store';
     zip: string;
     country: string;
   };
-
-
+export const isCustomSelected = writable(false);
+export const prefixOptions = writable([]); 
+export const selecteduser = writable('');
 export const UserStore: Writable<UserData> = writable({
   userID:'',
   prefix:'',
@@ -64,9 +65,10 @@ export type UserData = {
   lifeMember: string;
   sponsorStatus: string;
 }
+ 
+export const formMessage = writable('');
 
-
-type FamilyData = {
+export type FamilyData = {
   myself: string;
   father: string;
   mother: string;
