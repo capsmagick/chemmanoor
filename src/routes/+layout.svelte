@@ -120,7 +120,7 @@
 								</div>
 							</Popover.Trigger>
 							<Popover.Content>
-								<a href="'/Profile/myFamily'" class="dropdown-item">Profile</a><br />
+								<a href="Profile/myFamily" class="dropdown-item">Profile</a><br />
 								<Button variant="outline" on:click={signOutUser} class="dropdown-item"
 									>Sign Out</Button
 								>
