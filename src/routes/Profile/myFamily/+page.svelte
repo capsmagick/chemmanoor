@@ -40,6 +40,7 @@
   onMount(async () => {
    
     if (user) {
+      fetchPrefixData();
       checkUserOnboard(); 
       loadDataIntoUserStore();
     }
