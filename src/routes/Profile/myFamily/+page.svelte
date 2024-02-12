@@ -18,7 +18,12 @@
   import { getAuth } from 'firebase/auth';
   import { session } from '$lib/stores/sessions';
   import { FamilyStore } from '$lib/stores/data';
-  import { isCustomSelected,selecteduser,UserOnboard,UserStore,prefixOptions,formMessage } from '$lib/stores/data';
+  import { isCustomSelected,
+           selection,
+           selecteduser,
+           UserOnboard,
+           UserStore,
+           prefixOptions,formMessage } from '$lib/stores/data';
   import { updateDocument}  from '$lib/firebase/db';
   import { doc,getDoc,setDoc,arrayUnion, getFirestore ,updateDoc} from 'firebase/firestore';
   import type { Writable } from 'svelte/store';
@@ -34,13 +39,15 @@
   const user = auth.currentUser;
   const db = getFirestore(); // Store for dropdown options
   let customPrefix = '';
-  const selection = writable('Myself');
+  
+ 
 
 
   
   onMount(async () => {
    
     if (user) {
+      
       fetchPrefixData();
       checkUserOnboard(); 
       loadDataIntoUserStore();

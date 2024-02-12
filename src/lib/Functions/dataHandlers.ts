@@ -1,5 +1,5 @@
 import { getAuth } from 'firebase/auth';
-import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected } from '$lib/stores/data';
+import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected,selection } from '$lib/stores/data';
 import {arrayUnion, doc, getFirestore, updateDoc } from 'firebase/firestore';
 import type { Writable } from 'svelte/store';
 import type { UserData } from '$lib/stores/data';
@@ -9,6 +9,7 @@ import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } f
 import { selecteduser } from '$lib/stores/data';
 import { get } from 'svelte/store';
 import type {FamilyData} from '$lib/stores/data';
+
 
 /**
  * Initializes Firebase if it hasn't been initialized yet.
@@ -204,6 +205,7 @@ export async function checkUserOnboard(store: Writable<any>): Promise<void> {
             userData = { UserID: userID };
         }
         UserOnboard.set(userData);
+        selecteduser.set(get(UserOnboard).UserID);
 
         let familyData = await readDocument<{ myself: string, father: string, mother: string, lifepartner: string, children: string[] }>("myFamily", userData.UserID);
         if (!familyData) {
@@ -290,6 +292,7 @@ export async function handleSelectChange(event: Event) {
     const userOnboard = get(UserOnboard); // Use get to access the value of the Svelte store
     const userID = userOnboard.UserID; // Assuming this is the ID of the current user's family document
     const familyStore = get(FamilyStore); 
+    selection.set(selectedValue);
 
     if (selectedValue.startsWith('child-')) {
       const index = parseInt(selectedValue.split('-')[1], 10);
@@ -318,7 +321,8 @@ export async function handleSelectChange(event: Event) {
       }
     } else {
       // Logic for selecting or updating other family members
-      let memberType = selectedValue as keyof FamilyData;; // e.g., "mother", "father"
+      let memberType = selectedValue as keyof FamilyData;
+      // e.g., "mother", "father"
       let existingMemberId = familyStore[memberType];
 
       if (!existingMemberId) {
