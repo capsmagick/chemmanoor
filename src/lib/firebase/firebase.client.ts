@@ -2,14 +2,18 @@
 import { deleteApp, getApp, getApps, initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { connectAuthEmulator,getAuth,setPersistence,inMemoryPersistence} from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 import type { FirebaseApp } from 'firebase/app';
 import type { Firestore } from 'firebase/firestore';
 import type { Auth } from 'firebase/auth';
 import { browser } from '$app/environment';
+import { getStorage, type FirebaseStorage } from "firebase/storage";
 export let db: Firestore;
 export let app: FirebaseApp;
 export let auth: Auth;
+export let storage: FirebaseStorage;
+
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -31,14 +35,19 @@ const firebaseConfig = {
 // Initialize Firebase
 export const initializeFirebase = () => {
     if (!browser) {
-     throw new Error("Can't use the Firebase client on the server.");
+        // It's generally not recommended to initialize Firebase client SDKs on the server side due to security and functionality limitations.
+        // Server environments should use the Firebase Admin SDK.
+        console.error("Attempting to initialize Firebase client SDK on the server. Consider using Firebase Admin SDK for server-side operations.");
+        return;
     }
     if (!app) {
-     app = initializeApp(firebaseConfig);
-     auth = getAuth(app);
-   
-     if (firebaseConfig.useEmulator) {
-      connectAuthEmulator(auth, 'http://127.0.0.1:9099');
-     }
+        app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+        auth = getAuth(app);
+        db = getFirestore(app);
+        storage=getStorage(app);
+    
+        if (firebaseConfig.useEmulator) {
+            connectAuthEmulator(auth, 'http://127.0.0.1:9099');
+        }
     }
-   };
+};
