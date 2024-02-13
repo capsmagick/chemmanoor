@@ -1,9 +1,12 @@
 <script lang="ts">
     import type { PageData } from './$types';
-    import UserDetails from './userDetails.svelte'
+    import { onMount } from'svelte';
+    import { goto } from '$app/navigation';
     
     export let data: PageData;
+
+    onMount(async () => {
+        goto('/Profile/myFamily');
+         });
+
 </script>
-<div>
-    <UserDetails { data }/>
-</div>
