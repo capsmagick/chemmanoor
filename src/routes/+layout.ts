@@ -1,13 +1,15 @@
 /** @type {import('./$types').LayoutLoad} */
 
-import { initializeFirebase, auth } from '$lib/firebase/firebase.client';
+import { app, auth } from '$lib/firebase/firebase.client';
+import { getAuth } from 'firebase/auth';
 import { browser } from '$app/environment';
 import { onAuthStateChanged } from 'firebase/auth';
 
 export async function load({ url }) {
  if (browser) {
   try {
-   initializeFirebase();
+  const firebaseApp = app;
+  
   } catch (ex) {
    console.error(ex);
   }

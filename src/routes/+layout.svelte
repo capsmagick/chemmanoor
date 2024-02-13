@@ -4,6 +4,7 @@
 	import * as Popover from '$lib/components/ui/popover';
 	import { onMount } from 'svelte';
 	import { session } from '$lib/stores/sessions';
+	import { app } from '$lib/firebase/firebase.client';
 	import { goto } from '$app/navigation';
 	import { loginWithGoogle, signOutUser } from '$lib/firebase/auth';
 	import type { LayoutData } from './$types';

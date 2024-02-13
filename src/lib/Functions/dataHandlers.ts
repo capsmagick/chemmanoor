@@ -1,11 +1,9 @@
-import { getAuth } from 'firebase/auth';
 import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected,selection } from '$lib/stores/data';
-import {arrayUnion, doc, getFirestore, updateDoc } from 'firebase/firestore';
+import {arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import type { Writable } from 'svelte/store';
 import type { UserData } from '$lib/stores/data';
-import {db, app, auth} from '$lib/firebase/firebase.client'
-import { initializeFirebase } from '$lib/firebase/firebase.client';
-import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import {db, auth,storage} from '$lib/firebase/firebase.client'
+import { ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { selecteduser } from '$lib/stores/data';
 import { get } from 'svelte/store';
 import type {FamilyData} from '$lib/stores/data';
@@ -87,7 +85,6 @@ export async function deleteStoreDocument(collection: string, uid: string, store
 export async function updateDbStore(formEntries: FormData, store: Writable<any>, collectionName: string): Promise<void> {
     
     const formData = Object.fromEntries(formEntries);
-    const auth = getAuth();
     const user = auth.currentUser;
     if (user) {
         await updateStoreDocument(collectionName, user.uid, formData, store);
@@ -105,8 +102,7 @@ export function generateUniqueId(): string {
     const randomString = Math.random().toString(36).substring(2, 15);
     return `${timestamp}-${randomString}`;
 }
-export async function uploadImage(file: File): Promise<void> {
-    const storage = getStorage();
+export async function uploadImage(file: File): Promise<void> { 
     const fileName = `${new Date().getTime()}-${file.name}`; // A unique file name
     const fileRef = storageRef(storage, `profilePhotos/${fileName}`);
 
@@ -128,7 +124,6 @@ export async function uploadImage(file: File): Promise<void> {
     customPrefix: string,
     fileInput: HTMLInputElement,
   ) {
-    const db = getFirestore();
     const selectedUser = get(selecteduser);
     const userDocRef = doc(db, 'Users', selectedUser);
   
@@ -193,7 +188,6 @@ export async function uploadImage(file: File): Promise<void> {
 
 export async function checkUserOnboard(store: Writable<any>): Promise<void> {
    
-    const auth = getAuth();
     const user = auth.currentUser;
     
     if(user){
@@ -227,7 +221,6 @@ export async function checkUserOnboard(store: Writable<any>): Promise<void> {
  */
 export async function updateMyFamilyCollection(userId: string, memberTypeOrUniqueId: string , uniqueId?: string): Promise<void> {
     
-    const db = getFirestore();
     const userDocRef = doc(db, 'myFamily', userId);
 
     try {
@@ -345,7 +338,6 @@ export async function handleSelectChange(event: Event) {
     loadDataIntoUserStore(); // Load the selected user's data into UserStore
   }
  export async function loadDataIntoUserStore() {
-    const db = getFirestore();
     const userID = get(selecteduser); 
     // Assuming selecteduser is a writable store containing the user's ID
     console.log('User ID:', userID);
@@ -380,7 +372,6 @@ export async function handleSelectChange(event: Event) {
 }
 export async function populate(store: Writable<any>, collection: string): Promise<void> {
     
-    const auth = getAuth();
     const user = auth.currentUser;
     if (user) {
         const uid = user.uid;

@@ -11,6 +11,7 @@
            submitForm,
            handleSelectChange,
            loadDataIntoUserStore } from '$lib/Functions/dataHandlers';
+  import { onDestroy } from 'svelte';
   import * as Select from '$lib/components/ui/select';
   import { Input } from '$lib/components/ui/input';
   import Button from '$lib/components/ui/button/button.svelte';
@@ -29,18 +30,32 @@
   import type { Writable } from 'svelte/store';
   import { prefix} from '$lib/constants/dropdownOptions'
   import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+  import { auth} from "$lib/firebase/firebase.client";
 
 
 
   
   
   //export let data: PageData;
-  const auth = getAuth();
   const user = auth.currentUser;
   const db = getFirestore(); // Store for dropdown options
   let customPrefix = '';
+  let isLoading = false;
+  let showMessage = false;
+  let unsubscribe: () => void;
   
  
+   if (formMessage) {
+    isLoading = false;
+    showMessage = true;
+    console.log('formMessage is set');
+    setTimeout(() => {
+      showMessage = false;
+      formMessage.set('');
+    }, 5000);
+  } else {
+    isLoading = true;
+  }
 
 
   
@@ -58,6 +73,7 @@
   async function handleFormSubmit() {
     const fileInput = document.getElementById('profilePhoto') as HTMLInputElement;
     await submitForm(customPrefix, fileInput);
+   
   }
    async function handleAddCustomPrefix() {
     await addCustomPrefix(customPrefix);
@@ -70,6 +86,24 @@
   } else {
     isCustomSelected.set(false);
   }
+  $: {
+    unsubscribe = formMessage.subscribe(value => {
+      if (value) {
+        isLoading = false;
+        showMessage = true;
+        console.log('formMessage is set');
+        setTimeout(() => {
+          showMessage = false;
+          formMessage.set('');
+          isLoading = false; // Move the isLoading update here
+        }, 5000);
+      }
+    });
+  }
+
+  onDestroy(() => {
+    unsubscribe();
+  });
 
 </script>
 
@@ -97,7 +131,9 @@
         <label for="profilePhoto" class="cursor-pointer size-30px relative">
             <!-- <img src={$session.user?.photoURL || "https://github.com/shadcn.png"} alt="" class=" size-30px rounded-full object-cover" /> -->
            <!-- Removed descriptive alt text -->
-            <img src={$UserStore.profilePicture || $session.user?.photoURL} alt="" class="max-h-40 max-w-40 size-40px rounded-full object-cover" />
+           {#if $session.user}
+           <img src={$UserStore.profilePicture || $session.user.photoURL} alt="" class="max-h-40 max-w-40 size-40px rounded-full object-cover" />
+           {/if}
             <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 px-2 py-1 text-white text-sm mb-2">Change</div>
             <Input id="profilePhoto"  type="file" class="hidden" />
           </label>
@@ -204,9 +240,16 @@
     </div>
   
  
-    <Button class= 'max-w-xs' type="submit">Update</Button>
+    <div class="flex items-center">
+      <Button class= 'max-w-xs' type="submit" on:click={() => { isLoading = true ; formMessage.set(''); handleFormSubmit(formMessage); }}>Update</Button>
+      {#if isLoading}
+          <div class="ml-5 animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-900"></div>
+      {/if}
+  </div>
   
+  {#if showMessage}
   <p class="text-sm mt-2">{$formMessage}</p>
+{/if}
 </form>
 </div>
 
