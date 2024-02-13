@@ -44,6 +44,12 @@
 	});
 </script>
 
+<script context="module">
+    export const routes = {
+        '/admin': import('./Admin/Users/+page.svelte') // Add the admin route
+    };
+</script>
+
 <style>
     .container {
         display: flex;
