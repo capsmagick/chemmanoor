@@ -97,7 +97,9 @@
         <label for="profilePhoto" class="cursor-pointer size-30px relative">
             <!-- <img src={$session.user?.photoURL || "https://github.com/shadcn.png"} alt="" class=" size-30px rounded-full object-cover" /> -->
            <!-- Removed descriptive alt text -->
-            <img src={$UserStore.profilePicture || $session.user?.photoURL} alt="" class="max-h-40 max-w-40 size-40px rounded-full object-cover" />
+           {#if $session.user}
+           <img src={$UserStore.profilePicture || $session.user.photoURL} alt="" class="max-h-40 max-w-40 size-40px rounded-full object-cover" />
+           {/if}
             <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 px-2 py-1 text-white text-sm mb-2">Change</div>
             <Input id="profilePhoto"  type="file" class="hidden" />
           </label>

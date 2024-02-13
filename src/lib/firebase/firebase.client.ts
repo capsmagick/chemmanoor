@@ -1,18 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { deleteApp, getApp, getApps, initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { connectAuthEmulator,getAuth,setPersistence,inMemoryPersistence} from 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth} from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage} from "firebase/storage";
 
-import type { FirebaseApp } from 'firebase/app';
-import type { Firestore } from 'firebase/firestore';
-import type { Auth } from 'firebase/auth';
-import { browser } from '$app/environment';
-import { getStorage, type FirebaseStorage } from "firebase/storage";
-export let db: Firestore;
-export let app: FirebaseApp;
-export let auth: Auth;
-export let storage: FirebaseStorage;
 
 
 
@@ -33,21 +24,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const initializeFirebase = () => {
-    if (!browser) {
-        // It's generally not recommended to initialize Firebase client SDKs on the server side due to security and functionality limitations.
-        // Server environments should use the Firebase Admin SDK.
-        console.error("Attempting to initialize Firebase client SDK on the server. Consider using Firebase Admin SDK for server-side operations.");
-        return;
-    }
-    if (!app) {
-        app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-        auth = getAuth(app);
-        db = getFirestore(app);
-        storage=getStorage(app);
-    
-        if (firebaseConfig.useEmulator) {
-            connectAuthEmulator(auth, 'http://127.0.0.1:9099');
-        }
-    }
-};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
+
+export { app, db, auth, storage };
