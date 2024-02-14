@@ -15,17 +15,18 @@
     import { writable } from 'svelte/store';
     import { createRender } from 'svelte-headless-table';
   
-    // Define the UserData type
     type UserData = {
         id: string;
         userID: string;
-        firstName: string; // Add firstName field
+        prefix: string;
+        firstName: string;
+        middleName: string;
+        lastName: string;
+        email: string;
     };
   
-    // Initialize a writable store for the Firestore data
     let dataStore = writable<UserData[]>([]);
   
-    // Table configuration
     const tableConfig = {
         page: addPagination(),
         sort: addSortBy({ disableMultiSort: true }),
@@ -36,7 +37,6 @@
         select: addSelectedRows()
     };
   
-    // Function to fetch data from Firestore
     async function printFirestoreCollection() {
     try {
         const firestore = getFirestore();
@@ -46,13 +46,17 @@
         for (const queryDoc of querySnapshot.docs) {
             const { UserID } = queryDoc.data();
             const userDocPath = `Users/${UserID}`;
-            const userDocSnapshot = await getDoc(doc(firestore, userDocPath)); // Corrected the usage of getDoc
+            const userDocSnapshot = await getDoc(doc(firestore, userDocPath)); 
 
             if (userDocSnapshot.exists()) {
                 const userData: UserData = {
                     id: queryDoc.id,
                     userID: UserID,
-                    firstName: userDocSnapshot.data()?.firstName || "" // Use optional chaining to handle undefined values
+                    firstName: userDocSnapshot.data()?.firstName || "",
+                    middleName: userDocSnapshot.data()?.middleName || "",
+                    lastName: userDocSnapshot.data()?.lastName || "",
+                    email: userDocSnapshot.data()?.email || "",
+                    prefix: userDocSnapshot.data()?.prefix || ""
                 };
                 newData.push(userData);
             }
@@ -66,17 +70,9 @@
     }
 }
 
-  
-    // Fetch data from Firestore when the component mounts
     onMount(printFirestoreCollection);
-  
-    // Create the table using the data store and configuration
     let table = createTable(dataStore, tableConfig);
   
-    console.log('Data Store:', dataStore);
-    console.log('Table:', table);
-  
-    // Define columns for the table
     const columns = table.createColumns([
         table.column({
             accessor: "id",
@@ -107,8 +103,12 @@
             header: "User ID"
         }),
         table.column({
-            accessor: "firstName", // Use the firstName field
-            header: "First Name"
+            accessor: ({ prefix, firstName, middleName, lastName }) => `${prefix}. ${firstName} ${middleName} ${lastName}`.trim(),
+            header: "Name"
+        }),
+        table.column({
+            accessor: "email",
+            header: "Email"
         }),
         table.column({
             accessor: ({ id }) => id,
