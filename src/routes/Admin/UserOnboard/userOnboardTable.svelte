@@ -17,6 +17,7 @@
     type UserData = {
         id: string;
         userID: string;
+        profilePicture: string;
         prefix: string;
         firstName: string;
         middleName: string;
@@ -55,7 +56,8 @@
                     middleName: userDocSnapshot.data()?.middleName || "",
                     lastName: userDocSnapshot.data()?.lastName || "",
                     email: userDocSnapshot.data()?.email || "",
-                    prefix: userDocSnapshot.data()?.prefix || ""
+                    prefix: userDocSnapshot.data()?.prefix || "",
+                    profilePicture: userDocSnapshot.data()?.profilePicture || ""
                 };
                 newData.push(userData);
             }
@@ -95,6 +97,13 @@
                 filter: {
                     exclude: true
                 }
+            }
+        }),
+        table.column({
+            accessor: "profilePicture",
+            header: "Photo",
+            cell: ({ value }) => {
+            return `<img src="${value}" alt="Profile Photo" class="h-10 w-10 rounded-full">`;
             }
         }),
         table.column({

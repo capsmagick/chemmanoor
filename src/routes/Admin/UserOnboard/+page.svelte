@@ -5,6 +5,6 @@
     export let data: PageData;
 </script>
 
-<div>
+<div class="container mx-auto">
     <UserOnboardTable />
 </div>
