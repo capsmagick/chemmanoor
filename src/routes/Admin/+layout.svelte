@@ -7,7 +7,7 @@
     // Define sidebar items
     const sidebarItems = [
         { label: 'Users', href: '/Admin/Users' },
-        { label: 'User Onboard', href: '/Admin/#user-onboard' },
+        { label: 'User Onboard', href: '/Admin/UserOnboard' },
         { label: 'Constants', href: '/Admin/#constants' }
     ];
 
