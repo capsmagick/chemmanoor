@@ -2,14 +2,13 @@
     import { createTable, Render, Subscribe } from "svelte-headless-table";
     import { addPagination, addSortBy, addTableFilter, addHiddenColumns, addSelectedRows } 
     from "svelte-headless-table/plugins";
-    import { readable } from "svelte/store";
     import * as Table from "$lib/components/ui/table";
-    import DataTableActions from "./UserActions.svelte";
+    import DataTableActions from "./userOnboardActions.svelte";
     import { Button } from "$lib/components/ui/button";
     import { ChevronDown, SortDesc } from "lucide-svelte";
     import { Input } from "$lib/components/ui/input";
     import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-    import UserAdminCheckBox from "./UserAdminCheckBox.svelte";
+    import UserAdminCheckBox from "./userOnboardCheckBox.svelte";
     import { getFirestore, collection, getDocs, doc, getDoc } from 'firebase/firestore';
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
@@ -138,7 +137,7 @@
         .filter(([, hide]) => !hide)
         .map(([id]) => id);
   
-    const hidableCols = ["UserUID", "userID"];
+    const hidableCols = ["userID"];
 </script>
   
 <div>
