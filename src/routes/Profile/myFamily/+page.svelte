@@ -30,37 +30,23 @@
   import type { Writable } from 'svelte/store';
   import { prefix} from '$lib/constants/dropdownOptions'
   import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-  import { auth} from "$lib/firebase/firebase.client";
+  import { db,auth} from "$lib/firebase/firebase.client";
 
 
 
   
   
   //export let data: PageData;
-  const user = auth.currentUser;
-  const db = getFirestore(); // Store for dropdown options
+  let user;
   let customPrefix = '';
   let isLoading = false;
   let showMessage = false;
   let unsubscribe: () => void;
   
  
-   if (formMessage) {
-    isLoading = false;
-    showMessage = true;
-    console.log('formMessage is set');
-    setTimeout(() => {
-      showMessage = false;
-      formMessage.set('');
-    }, 5000);
-  } else {
-    isLoading = true;
-  }
-
-
-  
   onMount(async () => {
-   
+
+    user =  auth.currentUser;
     if (user) {
       
       fetchPrefixData();
@@ -68,11 +54,14 @@
       loadDataIntoUserStore();
     }
   });
+ 
 
-  
   async function handleFormSubmit() {
     const fileInput = document.getElementById('profilePhoto') as HTMLInputElement;
-    await submitForm(customPrefix, fileInput);
+  
+      await submitForm(customPrefix, fileInput);
+
+   
    
   }
    async function handleAddCustomPrefix() {
@@ -91,7 +80,6 @@
       if (value) {
         isLoading = false;
         showMessage = true;
-        console.log('formMessage is set');
         setTimeout(() => {
           showMessage = false;
           formMessage.set('');
@@ -108,11 +96,13 @@
 </script>
 
 <div class ="m-20 shadow-md p-10 bg-white hover:shadow-lg rounded-xl max-w-screen-md">
-  <form on:submit|preventDefault={(event) => handleFormSubmit(formMessage)} class="space-y-6">
+  <form on:submit|preventDefault={(event) => handleFormSubmit()} class="space-y-6">
     <div class ="class= 'max-w-xs">
     
   <label for="familyMember" class="block text-sm font-medium text-gray-700">Select Family Member</label>
-  <select id="familyMember"  on:change={handleSelectChange} class="max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+  <select id="familyMember"  
+          on:change={handleSelectChange} 
+          class="max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
     
     
     <option value="myself">Myself</option>
@@ -131,7 +121,7 @@
         <label for="profilePhoto" class="cursor-pointer size-30px relative">
             <!-- <img src={$session.user?.photoURL || "https://github.com/shadcn.png"} alt="" class=" size-30px rounded-full object-cover" /> -->
            <!-- Removed descriptive alt text -->
-           {#if $session.user}
+           {#if user}
            <img src={$UserStore.profilePicture || $session.user.photoURL} alt="" class="max-h-40 max-w-40 size-40px rounded-full object-cover" />
            {/if}
             <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 px-2 py-1 text-white text-sm mb-2">Change</div>
@@ -240,16 +230,17 @@
     </div>
   
  
-    <div class="flex items-center">
-      <Button class= 'max-w-xs' type="submit" on:click={() => { isLoading = true ; formMessage.set(''); handleFormSubmit(formMessage); }}>Update</Button>
+    <div class="grid grid-cols-4 gap-4">
+      <Button class= 'max-w-xs' type="submit" on:click={() => { isLoading = true ; formMessage.set(''); handleFormSubmit(); }}>Update</Button>
       {#if isLoading}
           <div class="ml-5 animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-900"></div>
       {/if}
+      
   </div>
-  
   {#if showMessage}
   <p class="text-sm mt-2">{$formMessage}</p>
 {/if}
+ 
 </form>
 </div>
 
