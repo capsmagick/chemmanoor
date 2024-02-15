@@ -14,7 +14,7 @@ import type { Writable } from 'svelte/store';
     zip: string;
     country: string;
   };
-  export const selection = writable('Myself');
+export const selection = writable('myself');
 export const isCustomSelected = writable(false);
 export const prefixOptions = writable([]); 
 export const selecteduser = writable('');

@@ -32,8 +32,12 @@
   import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
   import { db,auth} from "$lib/firebase/firebase.client";
 
-
-
+  import CheckBadge from '$lib/images/check-badge-svgrepo-com.svg';
+  import sponsorBadge from '$lib/images/diamond-svgrepo-com.svg';
+  import lifeMemberBandge from '$lib/images/heart-svgrepo-com.svg';
+  const approvalBadge: string = CheckBadge;
+  const spBadge : string = sponsorBadge
+  const lmBadge : string = lifeMemberBandge
   
   
   //export let data: PageData;
@@ -42,6 +46,8 @@
   let isLoading = false;
   let showMessage = false;
   let unsubscribe: () => void;
+
+  
   
  
   onMount(async () => {
@@ -52,6 +58,7 @@
       fetchPrefixData();
       checkUserOnboard(); 
       loadDataIntoUserStore();
+      
     }
   });
  
@@ -97,6 +104,7 @@
 
 <div class ="m-20 shadow-md p-10 bg-white hover:shadow-lg rounded-xl max-w-screen-md">
   <form on:submit|preventDefault={(event) => handleFormSubmit()} class="space-y-6">
+    <div class="grid grid-cols-4 gap-4">
     <div class ="class= 'max-w-xs">
     
   <label for="familyMember" class="block text-sm font-medium text-gray-700">Select Family Member</label>
@@ -114,6 +122,40 @@
     {/each}
     <option value={`child-${$FamilyStore.children.length}`}>Add New Child</option>
   </select>
+</div>
+
+
+  <div>
+    {#if $UserStore.approvalStatus === 'true'}
+  <div class="flex items-center justify-center">
+    <img src={approvalBadge} alt="Diamond Icon" class="h-6 w-6" />
+     
+    <span class="ml-2 text-green-500">Approved</span>
+  </div>
+{/if}
+  </div>
+  <div>
+  {#if $UserStore.sponsorStatus === 'true'}
+    <div class="flex items-center justify-center">
+      <img src={spBadge} alt="Diamond Icon" class="h-6 w-6" />
+      
+      <span class="ml-2 text-yellow-500">Sponsor</span>
+    </div>
+  {/if}
+  </div>
+  <div>
+    {#if $UserStore.lifeMember === 'true'}
+      <div class="flex items-center justify-center">
+        <img src={lmBadge} alt="Diamond Icon" class="h-6 w-6" />
+        <span class="ml-2 text-red-500">Life Member</span>
+      </div>
+    {/if}
+    </div>
+
+
+
+
+
 </div>
 
   <div class="flex flex-col space-y-4">
@@ -184,7 +226,7 @@
                 </select>
               </div>
               <div class ="self-center">
-              {#if $selection !== 'Myself'}
+              {#if $selection !== 'myself'}
                 <label for="late" class="flex mt-4 space-x-2">
                   <input id="late" type="checkbox" bind:checked={$UserStore.late} class="rounded text-indigo-600 focus:ring-indigo-500" />
                   <span class="text-sm font-medium text-gray-700">Late</span>
@@ -203,7 +245,7 @@
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
             <Input id="email" bind:value={$UserStore.email} type="email" placeholder="Email" class="max-w-xs" />
           </div>
-          {#if $selection !== 'Myself'}
+          {#if $selection !== 'myself'}
             <div class="flex self-center mt-4">
               <Button class="max-w-xs" type="button">Invite</Button>
             </div>

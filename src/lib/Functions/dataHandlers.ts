@@ -286,6 +286,7 @@ export async function handleSelectChange(event: Event) {
     const userID = userOnboard.UserID; // Assuming this is the ID of the current user's family document
     const familyStore = get(FamilyStore); 
     selection.set(selectedValue);
+    console.log(get(selection));
 
     if (selectedValue.startsWith('child-')) {
       const index = parseInt(selectedValue.split('-')[1], 10);
@@ -335,7 +336,8 @@ export async function handleSelectChange(event: Event) {
         }
       }
     }
-    loadDataIntoUserStore(); // Load the selected user's data into UserStore
+    loadDataIntoUserStore();
+     // Load the selected user's data into UserStore
   }
  export async function loadDataIntoUserStore() {
     const userID = get(selecteduser); 
