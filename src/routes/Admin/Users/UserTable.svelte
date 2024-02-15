@@ -2,7 +2,6 @@
   import { createTable, Render, Subscribe } from "svelte-headless-table";
   import { addPagination, addSortBy, addTableFilter, addHiddenColumns, addSelectedRows } 
   from "svelte-headless-table/plugins";
-  import { readable } from "svelte/store";
   import * as Table from "$lib/components/ui/table";
   import DataTableActions from "./UserActions.svelte";
   import { Button } from "$lib/components/ui/button";
@@ -75,9 +74,6 @@
   // Create the table using the data store and configuration
   let table = createTable(dataStore, tableConfig);
 
-  console.log('Data Store:', dataStore);
-  console.log('Table:', table);
-
   // Define columns for the table
   const columns = table.createColumns([
       table.column({
@@ -112,7 +108,8 @@
             }
       }),
       table.column({
-          accessor: ({ prefix, firstName, middleName, lastName }) => `${prefix}. ${firstName} ${middleName} ${lastName}`.trim(),
+          accessor: ({ prefix, firstName, middleName, lastName }) => 
+          `${prefix}. ${firstName} ${middleName} ${lastName}`.trim(),
           header: "Name"
       }),
       table.column({
@@ -156,7 +153,8 @@
   ]);
 
   // ViewModel for the table
-  const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns, rows } = table.createViewModel(columns);
+  const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns, rows } 
+  = table.createViewModel(columns);
 
   const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
   const { filterValue } = pluginStates.filter;
@@ -177,7 +175,8 @@
 <div>
   <div class="flex items-center py-4">
       <div>
-          <Input class="max-w-sm bg-white" placeholder="Filter email..." type="text" bind:value={$filterValue}/>
+          <Input class="max-w-sm bg-white" placeholder="Filter email..." type="text" 
+          bind:value={$filterValue}/>
       </div>
       <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild let:builder>

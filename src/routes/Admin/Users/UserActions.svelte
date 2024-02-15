@@ -8,7 +8,7 @@
 
     function handleEditClick() {
     // Navigate to the Edit User page
-    goto(`/Admin/Users/EditUser`);
+    goto(`/Admin/Users/EditUser?userId=${id}`);
     }
     
   </script>
