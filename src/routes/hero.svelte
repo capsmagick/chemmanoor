@@ -9,6 +9,6 @@
         <h2 class="website-nam text-xl md:text-5xl text-center font-light mt-2 md:mt-4">കുടുംബയോഗം</h2>
     </div>
     <div class="header-right mt-4 md:mt-0 md:ml-4">
-        <img src={imagePath} alt="Header Image" class="max-w-full h-auto">
+        <img src={imagePath} alt="" class="max-w-full h-auto">
     </div>
 </header>

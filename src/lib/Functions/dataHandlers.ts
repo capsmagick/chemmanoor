@@ -1,4 +1,4 @@
-import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected,selection } from '$lib/stores/data';
+import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected,selection, existingUser } from '$lib/stores/data';
 import {arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import type { Writable } from 'svelte/store';
 import type { UserData } from '$lib/stores/data';
@@ -84,6 +84,11 @@ export async function checkEmailExists(email: string): Promise<boolean> {
   const usersRef = collection(db, 'Users');
   const Query = query(usersRef, where('email', '==', email));
   const querySnapshot = await getDocs(Query);
+  let documentId: string | null = null;
+  if (!querySnapshot.empty) {
+    existingUser.set(querySnapshot.docs[0].id);
+
+  }
   return !querySnapshot.empty;
 }
 
@@ -206,7 +211,7 @@ export async function checkUserOnboard(store: Writable<any>): Promise<void> {
         const UID = user.uid;
         let userData = await readDocument<{ UserID: string }>("userOnboard", UID);
         if (!userData) {
-            const userID = generateUniqueId();
+            const userID =  get(existingUser);
             await createDocument("userOnboard", UID, { UserID: userID });
             userData = { UserID: userID };
         }
