@@ -6,6 +6,6 @@
     
 </script>
 
-<div class="container mx-auto py-10">
-    <UserTable/>
+<div class="container mx-auto">
+    <UserTable />
 </div>

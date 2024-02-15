@@ -44,6 +44,12 @@
 	});
 </script>
 
+<script context="module">
+    export const routes = {
+        '/admin': import('./Admin/Users/+page.svelte') // Add the admin route
+    };
+</script>
+
 <style>
     .container {
         display: flex;
@@ -146,7 +152,7 @@
 	</nav>
 	
 	<!-- Main content area -->
-    <div class=" p-20">
+    <div class="p-20">
         <slot />
     </div>
 	<Footer />
