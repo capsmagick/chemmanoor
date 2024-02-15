@@ -50,17 +50,6 @@
     };
 </script>
 
-<style>
-    .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 70vh;
-    }
-
-    .main-content {
-        flex: 1;
-    }
-</style>
 
 <div class="bg-gray-100 w-full ">
 	<nav>
@@ -141,9 +130,9 @@
 			<!-- Mobile menu, show/hide based on menu state. -->
 			<div class="mobile-menu sm:hidden" id="mobile-menu">
 				<div class="mobile-menu-items">
-					<a href="#" class="mobile-menu-item active" aria-current="page">Home</a>
-					<a href="#" class="mobile-menu-item">About</a>
-					<a href="#" class="mobile-menu-item">History</a>
+					<a href="/" class="mobile-menu-item active" aria-current="page">Home</a>
+					<a href="/About" class="mobile-menu-item">About</a>
+					<a href="/History" class="mobile-menu-item">History</a>
 					<!-- <a href="/Login" class="mobile-menu-item">Login</a>
 				<a href="/Register" class="mobile-menu-item">Register</a> -->
 				</div>

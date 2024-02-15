@@ -7,6 +7,7 @@ import { ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebas
 import { selecteduser } from '$lib/stores/data';
 import { get } from 'svelte/store';
 import type {FamilyData} from '$lib/stores/data';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 
 /**
@@ -73,7 +74,18 @@ export async function deleteStoreDocument(collection: string, uid: string, store
   await deleteDocument(collection, uid);
   store.set(defaultData);
 }
-
+/**
+ * Checks if the email ID used for login exists in the email field inside any of the documents in the Users collection.
+ * 
+ * @param email The email ID to check in the Users collection.
+ * @returns A promise that resolves to a boolean indicating if the email exists or not.
+ */
+export async function checkEmailExists(email: string): Promise<boolean> {
+  const usersRef = collection(db, 'Users');
+  const Query = query(usersRef, where('email', '==', email));
+  const querySnapshot = await getDocs(Query);
+  return !querySnapshot.empty;
+}
 
 /**
  * Updates the specified Firebase collection and Svelte store with the provided form entries.
@@ -280,6 +292,8 @@ export async function handleUserDocument(UserID: string): Promise<void> {
     }
     UserStore.set(userData as UserData);
 }
+
+
 export async function handleSelectChange(event: Event) {
     const selectedValue = (event.target as HTMLSelectElement).value;
     const userOnboard = get(UserOnboard); // Use get to access the value of the Svelte store
