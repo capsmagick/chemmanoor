@@ -105,8 +105,9 @@
 									<Avatar.Fallback class="w-10 h-10 flex items-center justify-center">CN</Avatar.Fallback>
 								</Avatar.Root>
 							</Popover.Trigger>
-							<Popover.Content class="flex flex-col gap-2 p-2">
-								<a href="/Profile/myFamily" class="dropdown-item p-2">Profile</a>
+							<Popover.Content class="flex flex-col gap-2 p-2 max-w-36">
+								
+								<Button variant="outline" on:click={() => goto('/Profile')}  class="dropdown-item">Dashboard</Button>
 								<Button variant="outline" on:click={signOutUser} class="dropdown-item">Sign Out</Button>
 							</Popover.Content>
 						</Popover.Root>

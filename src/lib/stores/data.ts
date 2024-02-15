@@ -14,6 +14,7 @@ import type { Writable } from 'svelte/store';
     zip: string;
     country: string;
   };
+
 export const selection = writable('myself');
 export const isCustomSelected = writable(false);
 export const prefixOptions = writable([]); 
@@ -86,6 +87,13 @@ export const FamilyStore: Writable<FamilyData> = writable({
   children: []
 });
 
+export const existingFamilyStore: Writable<FamilyData> = writable({
+  myself: '',
+  father: '',
+  mother: '',
+  lifepartner: '',
+  children: []
+});
 export const ContactStore = writable({
   email: '',
   phone1: '',

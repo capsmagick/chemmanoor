@@ -1,4 +1,4 @@
-import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected,selection, existingUser } from '$lib/stores/data';
+import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected,selection, existingUser,existingFamilyStore } from '$lib/stores/data';
 import {arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import type { Writable } from 'svelte/store';
 import type { UserData } from '$lib/stores/data';
@@ -87,6 +87,7 @@ export async function checkEmailExists(email: string): Promise<boolean> {
   let documentId: string | null = null;
   if (!querySnapshot.empty) {
     existingUser.set(querySnapshot.docs[0].id);
+    
 
   }
   return !querySnapshot.empty;
@@ -217,17 +218,106 @@ export async function checkUserOnboard(store: Writable<any>): Promise<void> {
         }
         UserOnboard.set(userData);
         selecteduser.set(get(UserOnboard).UserID);
+        await checkExistingUserInFamily();
 
-        let familyData = await readDocument<{ myself: string, father: string, mother: string, lifepartner: string, children: string[] }>("myFamily", userData.UserID);
-        if (!familyData) {
-            const initialFamilyData = { myself: userData.UserID, father: '', mother: '', lifepartner: '', children: [] as string[] };
-            await createDocument("myFamily", userData.UserID, initialFamilyData);
-            familyData = initialFamilyData;
-        }
-        FamilyStore.set(familyData);
+        // let familyData = await readDocument<{ myself: string, father: string, mother: string, lifepartner: string, children: string[] }>("myFamily", userData.UserID);
+        
+        // if (!familyData) {
+        //     const initialFamilyData = { myself: userData.UserID, father: '', mother: '', lifepartner: '', children: [] as string[] };
+        //     await createDocument("myFamily", userData.UserID, initialFamilyData);
+        //     familyData = initialFamilyData;
+        // }
+        // FamilyStore.set(familyData);
         await handleUserDocument(userData.UserID);
     }
 }
+/**
+ * Checks if the value of existingUser is present in any document within the myFamily collection.
+ * If present, retrieves the document's values into the existingFamilyStore.
+ */
+export async function checkExistingUserInFamily(): Promise<void> {
+  const existingUserID = get(existingUser); // Assuming existingUser is a readable store containing the UserID
+  if (!existingUserID) return;
+
+  const querySnapshot = await getDocs(collection(db, "myFamily"));
+  let isUserFound = false;
+  let foundInKey = ""; // Variable to store the key where the value was found
+
+  for (const doc of querySnapshot.docs) {
+    const data = doc.data();
+    // Iterate through each key in the document to check if any value is an array containing the existingUserID
+    for (const key in data) {
+      const value = data[key];
+      if (Array.isArray(value) && value.includes(existingUserID)) {
+        existingFamilyStore.set(data as FamilyData); // Cast data to FamilyData
+        isUserFound = true;
+        foundInKey = key; // Store the key where the value was found
+        if (foundInKey === 'children') {
+
+            FamilyStore.update(store => {
+                store.father = get(existingFamilyStore).myself;
+                store.myself = existingUserID;
+                store.mother = get(existingFamilyStore).lifepartner;
+                return store;
+            });
+            const familyStoreData = get(FamilyStore);
+            
+        await createDocument("myFamily", existingUserID, familyStoreData);
+            
+        }
+      
+        break; // Exit the loop once the user is found
+      } else if (value === existingUserID) {
+        existingFamilyStore.set(data as FamilyData); // Cast data to FamilyData
+        isUserFound = true;
+        foundInKey = key; 
+        if (foundInKey === 'lifepartner') {
+          FamilyStore.update(store => {
+            store.lifepartner = get(existingFamilyStore).myself;
+            store.myself = existingUserID;
+            store.children = get(existingFamilyStore).children
+            return store;
+        });
+        const familyStoreData = get(FamilyStore);
+        
+    await createDocument("myFamily", existingUserID, familyStoreData);
+      }
+      if (foundInKey === 'mother') {
+        FamilyStore.update(store => {
+          store.lifepartner = get(existingFamilyStore).father;
+          store.myself = existingUserID;
+          store.children = [...store.children, get(existingFamilyStore).myself];
+          return store;
+      });
+      const familyStoreData = get(FamilyStore);
+      
+  await createDocument("myFamily", existingUserID, familyStoreData);
+      }
+      if (foundInKey === 'father') {
+        FamilyStore.update(store => {
+          store.children = [...store.children, get(existingFamilyStore).myself];
+          store.myself = existingUserID;
+          store.lifepartner= get(existingFamilyStore).mother
+          return store;
+      });
+      const familyStoreData = get(FamilyStore);
+      
+  await createDocument("myFamily", existingUserID, familyStoreData);
+      }// Store the key where the value was found
+        console.log(`Found existing user in family document under key '${key}':`, data);
+        break; // Exit the loop once the user is found
+      }
+    }
+    if (isUserFound) break; // Exit the for...of loop once the user is found
+  }
+
+  if (!isUserFound) {
+      console.log("Existing user not found in any family document.");
+  } else {
+      console.log(`User was found in key: '${foundInKey}'`);
+  }
+}
+
 
 /**
  * Updates the MyFamily collection with a new family member's unique ID.
