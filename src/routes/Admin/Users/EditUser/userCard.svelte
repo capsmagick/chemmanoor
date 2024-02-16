@@ -8,8 +8,7 @@
              prefixOptions,formMessage } from '$lib/stores/data';
     import type { UserData } from '$lib/stores/data';
     import { onMount } from 'svelte';
-    import { getFirestore, collection, doc, getDocs, getDoc, setDoc } from 'firebase/firestore';
-    import { readable, writable } from 'svelte/store';
+    import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
     let userData = UserStore;
   
@@ -41,11 +40,63 @@
               }
           });
   
+
+
+		// Define a function to update the user document in Firestore
+		async function updateUserDocument(userId: string, newData: Partial<UserData>) {
+			try {
+				const firestore = getFirestore();
+				const userRef = doc(firestore, 'Users', userId);
+				const userDoc = await getDoc(userRef);
+
+				if (userDoc.exists()) {
+					// Merge existing user data with new data
+					const updatedUserData = { ...userDoc.data(), ...newData };
+					await setDoc(userRef, updatedUserData);
+					console.log('User data updated successfully!');
+				} else {
+					console.error('User document not found!');
+				}
+			} catch (error) {
+				console.error('Error updating user document: ', error);
+			}
+		}
+
+		// Add an event listener to the form submission
+		async function handleFormSubmit(event: Event) {
+			event.preventDefault(); // Prevent the default form submission behavior
+
+			// Extract the user ID from the URL or wherever it's stored
+			const urlParams = new URLSearchParams(window.location.search);
+			const userId = urlParams.get('userId');
+
+			if (userId) {
+				// Define the new data to update
+				const formData = new FormData(event.target as HTMLFormElement);
+				const newData: Partial<UserData> = {
+					firstName: formData.get('firstName') as string,
+				};
+
+				// Call the function to update the user document
+				await updateUserDocument(userId, newData);
+			} else {
+				console.error('User ID not provided!');
+			}
+		}
+
+		// Attach the event listener to the form
+		const form = document.querySelector('form');
+		if (form) {
+			form.addEventListener('submit', handleFormSubmit);
+		} else {
+			console.error('Form element not found!');
+		}
+
   
   </script>
 
 <div class="m-20 max-w-screen-md rounded-xl bg-white p-10 shadow-md hover:shadow-lg">
-	<form class="space-y-6">
+	<form class="space-y-6" on:submit={handleFormSubmit}>
 		<div class="flex flex-col space-y-4">
 			<div class="flex items-center justify-between space-x-10">
 				<div>
@@ -56,8 +107,7 @@
 							class="size-40px max-h-40 max-w-40 rounded-full object-cover"/>
 						<div
 							class="absolute bottom-0 left-1/2 mb-2 -translate-x-1/2 transform bg-black
-                        bg-opacity-50 px-2 py-1 text-sm text-white"
-						>
+                        bg-opacity-50 px-2 py-1 text-sm text-white">
 							Change
 						</div>
 						<Input id="profilePhoto" type="file" class="hidden" />
@@ -79,8 +129,7 @@
 
 					<select
 						class=" block w-full max-w-xs rounded-md border-2 border-gray-300 py-2 text-base
-                        focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-					>
+                        focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
 						{#each $prefixOptions as option}
 							<option value={option}>{option}</option>
 						{/each}
@@ -97,7 +146,9 @@
 					</label>
 					<Input
 						id="firstName"
-                        bind:value={$userData.firstName}
+						type="text"
+						name="firstName"
+                        value={$userData.firstName}
 						placeholder="First Name"
 						class="max-w-xs"/>
 				</div>
