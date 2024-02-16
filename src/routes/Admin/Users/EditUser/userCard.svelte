@@ -75,6 +75,12 @@
 				const formData = new FormData(event.target as HTMLFormElement);
 				const newData: Partial<UserData> = {
 					firstName: formData.get('firstName') as string,
+					middleName: formData.get('middleName') as string,
+					lastName: formData.get('lastName') as string,
+					dob: formData.get('dateOfBirth') as string,
+					occupation: formData.get('occupation') as string,
+					phone: formData.get('phoneNumber') as string,
+					email: formData.get('email') as string,
 				};
 
 				// Call the function to update the user document
@@ -158,6 +164,8 @@
 					</label>
 					<Input
 						id="middleName"
+						type="text"
+						name="middleName"
 						value={$userData.middleName}
 						placeholder="Middle Name"
 						class="max-w-xs"
@@ -167,6 +175,8 @@
 					<label for="lastName" class="block text-sm font-medium text-gray-700"> Last Name </label>
 					<Input
 						id="lastName"
+						type="text"
+						name="lastName"
 						value={$userData.lastName}
 						placeholder="Last Name"
 						class="max-w-xs"
@@ -180,6 +190,7 @@
 					</label>
 					<Input
 						id="dateOfBirth"
+						name="dateOfBirth"
 						value={$userData.dob}
 						type="date"
 						placeholder="Date of Birth"
@@ -192,6 +203,8 @@
 					</label>
 					<Input
 						id="occupation"
+						name="occupation"
+						type="text"
 						value={$userData.occupation}
 						placeholder="occupation"
 						class="max-w-xs"
@@ -204,8 +217,7 @@
 					<select
 						id="relationshipStatus"
 						class="block w-full max-w-xs rounded-md border-2 border-gray-300 py-2 text-base
-                        focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-					>
+                        focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
 						<option value="">Select</option>
 						<option value="single">Single</option>
 						<option value="married">Married</option>
@@ -233,12 +245,12 @@
 						Phone Number
 					</label>
 					<Input id="phoneNumber" value={$userData.phone} 
-                    type="tel" placeholder="Phone Number" class="max-w-xs" />
+                    type="tel" name="phoneNumber" placeholder="Phone Number" class="max-w-xs" />
 				</div>
 				<div>
 					<label for="email" class="block text-sm font-medium text-gray-700"> Email </label>
 					<Input value={$userData.email} 
-                    id="email" type="email" placeholder="Email" class="max-w-xs" />
+                    id="email" name="email" type="email" placeholder="Email" class="max-w-xs" />
 				</div>
 			</div>
 			<div class="grid grid-cols-4 gap-4">
