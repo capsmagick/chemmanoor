@@ -5,12 +5,14 @@
     import { isCustomSelected,
              selection,
              UserStore,
-             prefixOptions,formMessage } from '$lib/stores/data';
+             prefixOptions,formMessage, updateProfilePicture  } from '$lib/stores/data';
     import type { UserData } from '$lib/stores/data';
     import { onMount } from 'svelte';
     import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+	import { uploadBytes, getDownloadURL, ref, getStorage } from 'firebase/storage';
 
     let userData = UserStore;
+	let formSubmitting = false;
   
           async function fetchUserData(userId: string) {
               try {
@@ -20,7 +22,7 @@
   
                   if (userSnap.exists()) {
                       const data = userSnap.data() as UserData;
-                      userData.set(data);
+                      UserStore.set(data);
                       console.log('User data retrieved:', data);
                   } else {
                       console.error('User document not found!');
@@ -62,17 +64,17 @@
 			}
 		}
 
-		// Add an event listener to the form submission
 		async function handleFormSubmit(event: Event) {
-			event.preventDefault(); // Prevent the default form submission behavior
+			event.preventDefault();
 
-			// Extract the user ID from the URL or wherever it's stored
 			const urlParams = new URLSearchParams(window.location.search);
 			const userId = urlParams.get('userId');
 
 			if (userId) {
-				// Define the new data to update
-				const formData = new FormData(event.target as HTMLFormElement);
+				try {
+                const formData = new FormData(event.target as HTMLFormElement);
+                const profilePhoto = formData.get('profilePhoto') as File;
+
 				const newData: Partial<UserData> = {
 					firstName: formData.get('firstName') as string,
 					middleName: formData.get('middleName') as string,
@@ -81,12 +83,32 @@
 					occupation: formData.get('occupation') as string,
 					phone: formData.get('phoneNumber') as string,
 					email: formData.get('email') as string,
+					chart: formData.get('chart') as string,
+					gen: formData.get('gen') as string,
+					index: formData.get('index') as string,
 				};
 
-				// Call the function to update the user document
+                if (profilePhoto) {
+                    const storage = getStorage();
+                    const storageRef = ref(storage, `profilePictures/${userId}`);
+                    await uploadBytes(storageRef, profilePhoto);
+
+                    const profilePhotoURL = await getDownloadURL(storageRef);
+                    updateProfilePicture(profilePhotoURL);
+					newData.profilePicture = profilePhotoURL;
+				} else {
+                newData.profilePicture = $UserStore.profilePicture;
+                }
+				UserStore.update(storeData => ({ ...storeData, ...newData }));
 				await updateUserDocument(userId, newData);
+				} catch (error) {
+                console.error('Error submitting form:', error);
+            	} finally {
+                formSubmitting = false;
+            	}
 			} else {
 				console.error('User ID not provided!');
+				formSubmitting = false;
 			}
 		}
 
@@ -116,7 +138,7 @@
                         bg-opacity-50 px-2 py-1 text-sm text-white">
 							Change
 						</div>
-						<Input id="profilePhoto" type="file" class="hidden" />
+						<Input id="profilePhoto" name="profilePhoto" type="file" class="hidden" />
 					</label>
 				</div>
 
@@ -124,8 +146,7 @@
 					<FamilyIDSelector
 						bind:chartNumberSelection={$UserStore.chart}
 						bind:generationSelection={$UserStore.gen}
-						bind:indexSelection={$UserStore.index}
-					/>
+						bind:indexSelection={$UserStore.index}/>
 				</div>
 			</div>
 
@@ -283,4 +304,4 @@
 			<p class="mt-2 text-sm">{$formMessage}</p>
 		</div>
 	</form>
-</div> 
+</div>

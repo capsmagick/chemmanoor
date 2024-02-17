@@ -99,3 +99,9 @@ export const ContactStore = writable({
   country: ''
   });
 
+  export function updateProfilePicture(profilePictureURL: string) {
+    UserStore.update(userData => ({
+      ...userData,
+      profilePicture: profilePictureURL
+    }));
+  }
