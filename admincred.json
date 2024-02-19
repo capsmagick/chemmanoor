@@ -1,0 +1,13 @@
+{
+    "type": "service_account",
+    "project_id": "chemmanoor-family",
+    "private_key_id": "3ad96f0421103b07be1c6d86dd19cddd3b4df729",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDiIXVxG0/OB8C7\nJ46B8Z1NXEwsigFpej+KZvvntsscz3w49fuxClgiBfM2yFhr1QDggppvxWueoUVp\n7buSrFc+PFDCKuHN74cftGvBD/O4SjHa332o+zK/mpA7yTxJT1lYGZ8g9w2XnDkI\nJrE+cBlGNH47tyxajgjvKbHJFiayBlC4x9tXSEUme9HvioI7zPkfehfWpIgGPcjG\nfhDq4v5mV0JBVqV73j5H7KZ3sSo1rEuaWmdcT5vVBrC88RFrpDGWssDPwNnl0nEt\nWf6TbHHyg0FZHqK/uRkBvIWLgA0EL1+wagZVwJUvuzoQtdbpAaJCeql3YsH0t/hq\nUK4hOFm/AgMBAAECggEAH5ZnlAfUpgW/ORAq1UwC79jXayv79oKfzZ2FIrZjY6ri\nwgeFGRNGLGUttuwALfqbHMF3AUClP+DB6YIj6YvZbqrOPSaa/uwEBrxqhkAhiLoU\nghZ7XyzNHKa37yIKdyh2ZTAZt751pPAAUiXVgdChjIUDUnl2i0+76myl67OvGWmK\nbTON8WGzG1Ew84NMR+Ygm0divIQVOl5eCZ7LL5AtsiWqoC6ALPsmjTGVJluopOrk\n6KmupxRj2SSzFUD4gdhFFRmBf9PvJ8lwDKDpTYHGffXhKHForiB2e7twr5GLLJAn\n5T8XSkdwPUf996iIRYYgluLZon9LMNmdcWytgV9eQQKBgQD/BeLOqJ9k8zWpqSao\naXxrdTGQT0Ex88x0i0MEq23OeoLMBfPNvfC+UPwVrogjFwAAmeBdsFDh1jnZfWe5\nu8e6SjXRN9SAP0FYPeGHohdJ+UoD7rpXjxouY9ZRH4GU2fUqt1sgbpIwX8VkWOv6\nvGHUVch0poBk6vy3kGqmFkA/3QKBgQDi/zyU7vMFt9CD3WzhMG3+mZRsRrGpL8wk\n9ED0Ig66x94Y2wJ85HZP7oJvJ/2696X6Xc25j98Z9jWRi3whsaEQPdZPdCBtwVIq\nJAQLKIDRLlg2FH1RZGpKP3B72cYXkyEZ5uQxCBoweyrWjEgI+ItZramdvG0N6jP0\ntFSTGLP0SwKBgQCwqQwn6qmYTd5zrCiKa6Bz9BgkhrJ7/w44AayoVHTZnwZyfQEa\nGiTmQcWO43uNC0bGI9JINHajKzqhzfyHrmw6QWQsjYdYW/lRPnS393I4nUdHmB1f\nwFL7pc92HOQwEBiEwcWPnukIN5/O1saJx+vhIpedLyYsQphUNOecLDfPxQKBgQDV\n3OUF6G6cd4cDha1cKFWpZqa4sI4XuUmbk2hS2neIMGAmiMi6REDXo/3Nnh7mdQYy\ncQgvCMaIXjgwDPuBfyog9DGin+Uhot63h0EsBhf/fKttIDbFZVbi5wwiE5YXhe3M\nyoU5UMnj3VcJ1hbUJN6dOgmw6+LPFlWm+fMot0BsKwKBgQChQnkpWiCwGwUq5++y\n031YogmODYV7VwSBZ7U3ce5eoxkq9ZkC+mtfGbzHhJ8O4Nkvury0lhnOE1Hqd1kw\nsvYwjl7f1UQ1x3PvovXvrf58jFAFeuqwTNHUkmUAv8JrF1nxWDxq7hckSv4wR1rZ\nxQGd+hLYO7O1MJg2tQajBEk76g==\n-----END PRIVATE KEY-----\n",
+    "client_email": "firebase-adminsdk-5se0a@chemmanoor-family.iam.gserviceaccount.com",
+    "client_id": "100565070163162421750",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-5se0a%40chemmanoor-family.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  }

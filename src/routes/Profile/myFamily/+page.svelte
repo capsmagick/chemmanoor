@@ -102,7 +102,7 @@
 
 </script>
 
-<div class ="m-20 shadow-md p-10 bg-white hover:shadow-lg rounded-xl max-w-screen-md">
+<div class ="m-10  p-10 bg-white max-w-screen-md">
   <form on:submit|preventDefault={(event) => handleFormSubmit()} class="space-y-6">
     <div class="grid grid-cols-4 gap-4">
     <div class ="class= 'max-w-xs">
@@ -245,11 +245,11 @@
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
             <Input id="email" bind:value={$UserStore.email} type="email" placeholder="Email" class="max-w-xs" />
           </div>
-          {#if $selection !== 'myself'}
+          <!-- {#if $selection !== 'myself'}
             <div class="flex self-center mt-4">
               <Button class="max-w-xs" type="button">Invite</Button>
             </div>
-          {/if}
+          {/if} -->
 
           </div>
     <div class="grid grid-cols-4 gap-4">

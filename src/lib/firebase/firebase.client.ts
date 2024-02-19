@@ -1,9 +1,10 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth} from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import { getStorage} from "firebase/storage";
-
+import { initializeApp, type FirebaseApp } from "firebase/app";
+import { getAuth} from "firebase/auth";
+import { getFirestore, type Firestore } from 'firebase/firestore';
+import { getStorage, type FirebaseStorage} from "firebase/storage";
+import {  type Auth } from "firebase/auth";
+import { inMemoryPersistence, setPersistence } from "firebase/auth";
 
 
 
@@ -24,9 +25,28 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+// let app: FirebaseApp;
+// let db: Firestore;
+// let auth: Auth;
+// let storage: FirebaseStorage;
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 const storage = getStorage(app);
 
+// export async function getFirebaseClient():Promise<{ error: false; data: ReturnType<typeof getAuth> } | { error: true; msg: string }> {
+//     try {
+      
+//          app = initializeApp(firebaseConfig);
+//          auth = getAuth(app);
+//          db = getFirestore(app);
+//          storage = getStorage(app);
+//         await setPersistence(auth, inMemoryPersistence);
+//         return { error: false, data: auth };
+//     } catch (error) {
+//         console.error(error);
+//         return { error: true, msg: "Error initializing firebase client" };
+//     }
+// }
 export { app, db, auth, storage };

@@ -1,4 +1,4 @@
-<footer class="footer bg-white text-gray-500 py-5">
+<footer class="footer w-10/12  text-gray-500 rounded-2xl mb-30 py-5">
     <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
         <!-- Logo and Title -->
         <div class="flex flex-col items-center">
@@ -23,8 +23,8 @@
         <div  class="flex flex-col items-center mt-4 md:mt-0">
             <div class="text-center md:text-left">
                 <span class="text-gray-600 font-bold">Services</span><br>
-                <a href="#" class="text-gray-500 hover:underline">Terms of Service</a><br/>
-                <a href="#" class="text-gray-500 hover:underline">Privacy Policy</a>
+                <a href="/" class="text-gray-500 hover:underline">Terms of Service</a><br/>
+                <a href="/" class="text-gray-500 hover:underline">Privacy Policy</a>
             </div>
         </div>
         <!-- Address and Contact -->
@@ -58,7 +58,6 @@
         </div>
     </div>
     <!-- Separator Line -->
-    <div class="border-t border-gray-600 mt-4"></div>
     <!-- Copyright -->
     <div class="copyright text-xs text-gray-500 text-center mt-2">
         <p>&copy;2024 Knowbin Technologies Pvt Ltd. All rights reserved.</p>

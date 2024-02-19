@@ -6,11 +6,12 @@
 	import { session } from '$lib/stores/sessions';
 	import { app } from '$lib/firebase/firebase.client';
 	import { goto } from '$app/navigation';
-	import { loginWithGoogle, signOutUser } from '$lib/firebase/auth';
+	//import { loginWithGoogle, signOutUser } from '$lib/firebase/auth';
 	import type { LayoutData } from './$types';
 	import Button from '$lib/components/ui/button/button.svelte';
 	import Footer from './footer.svelte';
 	import googleImage from '$lib/images/google.png';
+	import { signOutUser } from '$lib/firebase/auth';
 
 	export let data: LayoutData;
 
@@ -53,9 +54,16 @@
 </script>
 
 
-<div class="bg-gray-100 w-full ">
+<div class="w-full grid justify-items-stretch min-h-screen">
+	<div class="absolute top-0 -z-10 h-full w-full bg-white">
+		<div class="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(173,109,244,0.5)] opacity-60 blur-[80px]">
+		</div>
+		<div class="absolute bottom-auto right-auto  top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(173,109,244,0.5)] opacity-70 blur-[80px]"></div>
+		<div class="absolute bottom-0 right-0  top-auto h-[300px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(173,109,244,0.5)] opacity-5a0 blur-[80px]"></div>
+	</div>
+	<div class="mt-20 justify-self-center w-10/12">
 	<nav>
-		<div class="mx-auto bg-white shadow-md max-w-full px-2 sm:px-6 lg:px-8">
+		<div class=" bg-white rounded-full shadow-md  px-2 sm:px-6 lg:px-8 ">
 			<div class="relative flex h-16 items-center justify-between">
 				<!-- Mobile menu button-->
 				<button
@@ -112,7 +120,7 @@
 							</Popover.Content>
 						</Popover.Root>
 					{:else}
-						<Button variant="outline"  on:click={loginWithGoogle} class="login-button ">
+						<Button variant="outline"  on:click={() => goto('/auth')} class="login-button ">
 								<img src={gimage} alt="Google" class="w-6 h-6 mr-4">
 								Google Login</Button>
 					{/if}
@@ -130,12 +138,16 @@
 			</div>
 		</div>
 	</nav>
+	</div>
 	
 	<!-- Main content area -->
-    <div class="p-20">
+    <div class="justify-self-center">
         <slot />
     </div>
-	<Footer />
+	<div class="flex justify-center items-end w-full absolute bottom-0">
+		<Footer />
+	</div>
+	
 </div>
 	
 

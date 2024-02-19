@@ -1,4 +1,4 @@
-import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected,selection, existingUser,existingFamilyStore } from '$lib/stores/data';
+import { prefixOptions, UserStore, UserOnboard,formMessage, FamilyStore,isCustomSelected,selection, existingUser,existingFamilyStore, ContactStore } from '$lib/stores/data';
 import {arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import type { Writable } from 'svelte/store';
 import type { UserData } from '$lib/stores/data';
@@ -80,18 +80,7 @@ export async function deleteStoreDocument(collection: string, uid: string, store
  * @param email The email ID to check in the Users collection.
  * @returns A promise that resolves to a boolean indicating if the email exists or not.
  */
-export async function checkEmailExists(email: string): Promise<boolean> {
-  const usersRef = collection(db, 'Users');
-  const Query = query(usersRef, where('email', '==', email));
-  const querySnapshot = await getDocs(Query);
-  let documentId: string | null = null;
-  if (!querySnapshot.empty) {
-    existingUser.set(querySnapshot.docs[0].id);
-    
 
-  }
-  return !querySnapshot.empty;
-}
 
 /**
  * Updates the specified Firebase collection and Svelte store with the provided form entries.
@@ -211,112 +200,94 @@ export async function checkUserOnboard(store: Writable<any>): Promise<void> {
     if(user){
         const UID = user.uid;
         let userData = await readDocument<{ UserID: string }>("userOnboard", UID);
-        if (!userData) {
-            const userID =  get(existingUser);
-            await createDocument("userOnboard", UID, { UserID: userID });
-            userData = { UserID: userID };
+  
+        if (userData) {
+          UserOnboard.set(userData);
+          selecteduser.set(userData.UserID);
+          let familyData = await readDocument<{ myself: string, father: string, mother: string, lifepartner: string, children: string[] }>("myFamily", userData.UserID);
+          if (familyData === null) {
+            // Provide a default value for familyData if null
+            familyData = { myself: '', father: '', mother: '', lifepartner: '', children: [] };
         }
-        UserOnboard.set(userData);
-        selecteduser.set(get(UserOnboard).UserID);
-        await checkExistingUserInFamily();
+        FamilyStore.set(familyData);
+          
+      } else {
+          // Handle the null case, for example, by setting a default value or showing an error message
+          console.error("User data is null");
+         
+      }
 
-        // let familyData = await readDocument<{ myself: string, father: string, mother: string, lifepartner: string, children: string[] }>("myFamily", userData.UserID);
-        
-        // if (!familyData) {
-        //     const initialFamilyData = { myself: userData.UserID, father: '', mother: '', lifepartner: '', children: [] as string[] };
-        //     await createDocument("myFamily", userData.UserID, initialFamilyData);
-        //     familyData = initialFamilyData;
-        // }
-        // FamilyStore.set(familyData);
-        await handleUserDocument(userData.UserID);
     }
+}
+export function resetStores() {
+  // Assuming all stores are imported and are of type Writable<any>
+  // Replace 'StoreName' with actual store names from your data.ts
+  UserStore.set({
+    // Assuming the structure of UserStore, replace with actual keys
+    userID: '',
+    prefix: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    profilePicture: '',
+    dob: '',
+    occupation: '',
+    relationshipStatus: '',
+    late: '',
+    phone: '',
+    email: '',
+    dateOfMarriage: '',
+    dateOfDeath: '',
+    chart: '',
+    gen: '',
+    index: '', 
+    approvalStatus: '',
+    lifeMember: '',
+    sponsorStatus: ''
+  });
+  UserOnboard.set({UserID: ''});
+
+  FamilyStore.set({
+    // Assuming the structure of FamilyStore, replace with actual keys
+    myself: '',
+    father: '',
+    mother: '',
+    lifepartner: '',
+    children: []
+  });
+
+  ContactStore.set({
+    email: '',
+    phone1: '',
+    phone2: '',
+    parish: '',
+    address1: '',
+    address2: '',
+    city: '',
+    state: '',
+    zip: '',
+    country: ''
+  })
+
+  existingFamilyStore.set({
+     myself: '',
+  father: '',
+  mother: '',
+  lifepartner: '',
+  children: []
+}
+  );
+
+  // Repeat the pattern for other stores, setting each key to an empty string or an appropriate default value
+  // For example:
+  // AnotherStore.set({ key1: '', key2: '', ... });
+
+  // If there are any specific stores that handle arrays or objects differently, adjust the default value accordingly
 }
 /**
  * Checks if the value of existingUser is present in any document within the myFamily collection.
  * If present, retrieves the document's values into the existingFamilyStore.
  */
-export async function checkExistingUserInFamily(): Promise<void> {
-  const existingUserID = get(existingUser); // Assuming existingUser is a readable store containing the UserID
-  if (!existingUserID) return;
-
-  const querySnapshot = await getDocs(collection(db, "myFamily"));
-  let isUserFound = false;
-  let foundInKey = ""; // Variable to store the key where the value was found
-
-  for (const doc of querySnapshot.docs) {
-    const data = doc.data();
-    // Iterate through each key in the document to check if any value is an array containing the existingUserID
-    for (const key in data) {
-      const value = data[key];
-      if (Array.isArray(value) && value.includes(existingUserID)) {
-        existingFamilyStore.set(data as FamilyData); // Cast data to FamilyData
-        isUserFound = true;
-        foundInKey = key; // Store the key where the value was found
-        if (foundInKey === 'children') {
-
-            FamilyStore.update(store => {
-                store.father = get(existingFamilyStore).myself;
-                store.myself = existingUserID;
-                store.mother = get(existingFamilyStore).lifepartner;
-                return store;
-            });
-            const familyStoreData = get(FamilyStore);
-            
-        await createDocument("myFamily", existingUserID, familyStoreData);
-            
-        }
-      
-        break; // Exit the loop once the user is found
-      } else if (value === existingUserID) {
-        existingFamilyStore.set(data as FamilyData); // Cast data to FamilyData
-        isUserFound = true;
-        foundInKey = key; 
-        if (foundInKey === 'lifepartner') {
-          FamilyStore.update(store => {
-            store.lifepartner = get(existingFamilyStore).myself;
-            store.myself = existingUserID;
-            store.children = get(existingFamilyStore).children
-            return store;
-        });
-        const familyStoreData = get(FamilyStore);
-        
-    await createDocument("myFamily", existingUserID, familyStoreData);
-      }
-      if (foundInKey === 'mother') {
-        FamilyStore.update(store => {
-          store.lifepartner = get(existingFamilyStore).father;
-          store.myself = existingUserID;
-          store.children = [...store.children, get(existingFamilyStore).myself];
-          return store;
-      });
-      const familyStoreData = get(FamilyStore);
-      
-  await createDocument("myFamily", existingUserID, familyStoreData);
-      }
-      if (foundInKey === 'father') {
-        FamilyStore.update(store => {
-          store.children = [...store.children, get(existingFamilyStore).myself];
-          store.myself = existingUserID;
-          store.lifepartner= get(existingFamilyStore).mother
-          return store;
-      });
-      const familyStoreData = get(FamilyStore);
-      
-  await createDocument("myFamily", existingUserID, familyStoreData);
-      }// Store the key where the value was found
-        console.log(`Found existing user in family document under key '${key}':`, data);
-        break; // Exit the loop once the user is found
-      }
-    }
-    if (isUserFound) break; // Exit the for...of loop once the user is found
-  }
-
-  if (!isUserFound) {
-      console.log("Existing user not found in any family document.");
-  } else {
-      console.log(`User was found in key: '${foundInKey}'`);
-  }
-}
 
 
 /**

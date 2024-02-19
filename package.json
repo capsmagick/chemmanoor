@@ -49,6 +49,7 @@
 		"cmdk-sv": "^0.0.13",
 		"embla-carousel-svelte": "^8.0.0-rc21",
 		"firebase": "^10.7.2",
+		"firebase-admin": "^12.0.0",
 		"formsnap": "^0.4.2",
 		"lucide-svelte": "^0.314.0",
 		"mode-watcher": "^0.1.2",
