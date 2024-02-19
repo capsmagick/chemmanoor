@@ -102,7 +102,7 @@
 
 </script>
 
-<div class ="m-10  p-10 bg-white max-w-screen-md">
+<div class ="m-10 p-5 sm:p-10 bg-white max-w-screen-md">
   <form on:submit|preventDefault={(event) => handleFormSubmit()} class="space-y-6">
     <div class="grid grid-cols-4 gap-4">
     <div class ="class= 'max-w-xs">

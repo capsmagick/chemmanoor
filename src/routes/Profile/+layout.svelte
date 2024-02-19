@@ -35,7 +35,7 @@
   <div class="grid grid-flow-col  gap-4 lg:grid-cols-[120px_1fr] lg:gap-8 backdrop-blur-sm bg-white/30 rounded-3xl shadow-md">
   
   <!-- Desktop sidebar -->
-  <div class="mt-20 ">
+  <div class="mt-20 hidden sm:block">
     <div class="grid ">
 
       <ul class="justify-self-left place-self-center">
