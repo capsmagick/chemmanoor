@@ -19,7 +19,7 @@
         iso3: string;
     }
 
-    export let data: PageData;
+    //export let data: PageData;
     let successMessage = '';
     let errorMessage = '';
     let countries: Country[] = [];
@@ -73,12 +73,8 @@
     }
 
 </script>
-<div class="mt-10">
-<Card.Root class="w-[950px]">
-        <Card.Header>
-          <Card.Title>Contact Details</Card.Title>
-        </Card.Header>
-        <Card.Content>
+<div class="m-10  p-10 max-w-screen-md">
+<div>
             <form on:submit|preventDefault={handleSubmit}>
                 <div class="p-4 mb-4">
                     <dev class="grid grid-cols-4 gap-4">
@@ -166,6 +162,5 @@
                       {/if}
                 </div>
             </form>
-      </Card.Content>
-</Card.Root>
+        </div>
 </div>
