@@ -34,8 +34,9 @@ import {resetStores} from '$lib/Functions/dataHandlers';
     console.error("Firebase Auth instance is not correctly initialized.");
     return;
 }
-          const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+          //const cred = await signInWithPopup(auth, new GoogleAuthProvider());
 
+          const cred = await signInWithPopup(auth, new GoogleAuthProvider().setCustomParameters({ prompt: 'select_account' }));
           // Additional check to ensure cred.user is not undefined
           if (!cred.user) {
               console.error("cred.user is undefined.");
