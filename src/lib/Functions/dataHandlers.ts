@@ -452,6 +452,7 @@ export async function handleSelectChange(event: Event) {
       });
     selecteduser.set(uniqueId); // Set the newly added family member as the selected user
 }
+
 export async function populate(store: Writable<any>, collection: string): Promise<void> {
     
     const user = auth.currentUser;
