@@ -8,7 +8,7 @@
     const sidebarItems = [
         { label: 'Users', href: '/Admin/Users' },
         { label: 'User Onboard', href: '/Admin/UserOnboard' },
-        { label: 'Constants', href: '/Admin/#constants' }
+        { label: 'Constants', href: '/Admin/Constants' }
     ];
 
     // Function to handle sidebar item click
