@@ -5,7 +5,7 @@
   import * as Table from "$lib/components/ui/table";
   import DataTableActions from "./UserActions.svelte";
   import { Button } from "$lib/components/ui/button";
-  import { ChevronDown, SortDesc } from "lucide-svelte";
+  import { ChevronDown, Plus, SortDesc } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import UserAdminCheckBox from "./UserAdminCheckBox.svelte";
@@ -13,6 +13,7 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { createRender } from 'svelte-headless-table';
+  import { goto } from "$app/navigation";
 
   // Define the UserData type
   type UserData = {
@@ -175,6 +176,11 @@
 <div>
   <div class="flex items-center py-4">
       <div>
+        <Button variant="outline" class="ml-auto" name="addUser" on:click={()=>{goto('/Admin/Users/AddUser')}}>
+            Add User <Plus class="h-4 w-4 mr-2"/>
+        </Button>
+      </div>
+      <div class="pl-4">
           <Input class="max-w-sm bg-white" placeholder="Filter email..." type="text" 
           bind:value={$filterValue}/>
       </div>
