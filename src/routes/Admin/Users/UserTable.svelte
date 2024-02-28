@@ -9,7 +9,7 @@
   import { Input } from "$lib/components/ui/input";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import UserAdminCheckBox from "./UserAdminCheckBox.svelte";
-  import { getFirestore, collection, getDocs } from 'firebase/firestore';
+  import { getFirestore, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { createRender } from 'svelte-headless-table';
@@ -41,6 +41,16 @@
       hide: addHiddenColumns(),
       select: addSelectedRows()
   };
+
+  export async function removeUser(userId: string) {
+    try {
+      const firestore = getFirestore();
+      await deleteDoc(doc(firestore, 'Users', userId));
+      console.log('User removed successfully!');
+    } catch (error) {
+      console.error('Error removing user:', error);
+    }
+  }
 
   // Function to fetch data from Firestore
   async function printFirestoreCollection() {
