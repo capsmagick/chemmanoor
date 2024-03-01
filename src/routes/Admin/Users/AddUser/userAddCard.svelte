@@ -157,8 +157,7 @@
                         value={$userData.dob}
                         type="date"
                         placeholder="Date of Birth"
-                        class="max-w-xs"
-                    />
+                        class="max-w-xs"/>
                 </div>
                 <div>
                     <label for="occupation" class="block text-sm font-medium text-gray-700">
@@ -170,8 +169,7 @@
                         type="text"
                         value={$userData.occupation}
                         placeholder="occupation"
-                        class="max-w-xs"
-                    />
+                        class="max-w-xs"/>
                 </div>
                 <div>
                     <label for="relationshipStatus" class="block text-sm font-medium text-gray-700">

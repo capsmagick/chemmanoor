@@ -172,7 +172,10 @@
         
         <div ml-10>
         
-            <FamilyIDSelector  bind:chartNumberSelection={$UserStore.chart} bind:generationSelection={$UserStore.gen} bind:indexSelection={$UserStore.index} />
+            <FamilyIDSelector  
+            bind:chartNumberSelection={$UserStore.chart} 
+            bind:generationSelection={$UserStore.gen} 
+            bind:indexSelection={$UserStore.index} />
           </div>
 
       </div>
