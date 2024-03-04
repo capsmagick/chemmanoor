@@ -6,7 +6,7 @@
     import { Button } from "$lib/components/ui/button";
     import { SortDesc } from "lucide-svelte";
     import { Input } from "$lib/components/ui/input";
-    import { getFirestore, collection, getDocs, getDoc, deleteDoc, doc } from 'firebase/firestore';
+    import { getFirestore, collection, getDocs, getDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
     import { createRender } from 'svelte-headless-table';
@@ -19,6 +19,8 @@
   
     // Initialize a writable store for the prefixes data
     let dataStore = writable<Prefix[]>([]);
+    let prefixInput: HTMLInputElement;
+
   
     // Table configuration
     const tableConfig = {
@@ -93,13 +95,58 @@
     $: $hiddenColumnIds = Object.entries(hideForId)
         .filter(([, hide]) => !hide)
         .map(([id]) => id);
+
+    // Function to add a new prefix to Firestore
+    async function addPrefix() {
+        try {
+            const prefixValue = prefixInput.value.trim(); // Get the value from the input box and trim any leading/trailing whitespace
+            if (!prefixValue) return; // Don't proceed if the input is empty
+            
+            const firestore = getFirestore();
+            const prefixRef = doc(firestore, 'constants', 'prefix');
+        
+            // Get the current document data
+            const prefixSnapshot = await getDoc(prefixRef);
+            if (prefixSnapshot.exists()) {
+                const prefixData = prefixSnapshot.data();
+                
+                // Add the new prefix to the existing array
+                const updatedPrefixData = [...prefixData.prefixdata, prefixValue];
+                
+                // Update the document with the modified data
+                await updateDoc(prefixRef, {
+                    prefixdata: updatedPrefixData
+                });
+                
+                console.log('Prefix added successfully!');
+            } else {
+                console.log('Prefix document does not exist!');
+            }
+
+            // Clear the input box after adding the prefix
+            prefixInput.value = '';
+        } catch (error) {
+            console.error('Error adding prefix:', error);
+        }
+    }
+
+    // Initialize the input box reference after the component mounts
+    onMount(() => {
+        prefixInput = document.getElementById('prefix') as HTMLInputElement;
+    });
   
   </script>
   
   <div>
     <div class="flex items-center py-4">
-        <div class="pl-4">
+        <div>
             <Input class="max-w-sm bg-white" placeholder="Filter prefix..." type="text" bind:value={$filterValue}/>
+        </div>
+        <div class="pl-4">
+            <Input class="bg-white" id="prefix" placeholder="Mr" type="text"/>
+        </div>
+        <div>
+            <Button variant="outline" id="addPrefix" type="button" on:click={addPrefix}>Add Prefix</Button>
         </div>
     </div>
     <div class="rounded-md border">
