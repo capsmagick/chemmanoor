@@ -66,17 +66,14 @@
   async function handleFormSubmit() {
     const fileInput = document.getElementById('profilePhoto') as HTMLInputElement;
   
-      await submitForm(customPrefix, fileInput);
-
-   
+      await submitForm(customPrefix, fileInput);   
    
   }
    async function handleAddCustomPrefix() {
-    await addCustomPrefix(customPrefix);
+    await addCustomPrefix(customPreix);
     customPrefix = ''; // Reset custom prefix input after the operation
   }
  
-  
   $: if ($UserStore.prefix === 'other') {
     isCustomSelected.set(true);
   } else {
@@ -184,7 +181,7 @@
             <div>
               <label for="prefix" class="block text-sm font-medium text-gray-700">Prefix</label>
               
-              <select class = ' max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'bind:value={$UserStore.prefix}>
+              <select class = 'max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md'bind:value={$UserStore.prefix}>
                   {#each $prefixOptions as option}
                     <option value={option}>{option}</option>
                   {/each}
