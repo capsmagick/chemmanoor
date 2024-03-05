@@ -103,8 +103,8 @@ debugger;
 					occupation: formData.get('occupation') as string,
 					phone: formData.get('phoneNumber') as string,
 					email: formData.get('email') as string,
-					chart: formData.get('chart') as string,
-					gen: formData.get('gen') as string,
+					chart: formData.get('chartNumber') as string,
+					gen: formData.get('generation') as string,
 					index: formData.get('index') as string,
 				};
 
