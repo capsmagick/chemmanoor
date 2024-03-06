@@ -481,21 +481,21 @@ export async function handleFormSubmit(event: Event) {
     firstName: formData.get('firstName') as string,
     middleName: formData.get('middleName') as string,
     lastName: formData.get('lastName') as string,
-    profilePicture: '', // provide a value for this property
+    profilePicture: '', 
     dob: formData.get('dateOfBirth') as string,
     occupation: formData.get('occupation') as string,
-    relationshipStatus: '', // provide a value for this property if it's required
-    late: '', // provide a value for this property if it's required
+    relationshipStatus: formData.get('relationshipStatus') as string, 
+    late: formData.get('late') as string,
     phone: formData.get('phoneNumber') as string,
     email: formData.get('email') as string,
-    dateOfMarriage: '', // provide a value for this property if it's required
-    dateOfDeath: '', // provide a value for this property if it's required
+    dateOfMarriage: formData.get('dateOfMarriage') as string,
+    dateOfDeath: formData.get('dateOfDeath') as string,
     chart: formData.get('chartNumber') as string,
     gen: formData.get('generation') as string,
     index: formData.get('index') as string,
-    approvalStatus: '', // provide a value for this property if it's required
-    lifeMember: '', // provide a value for this property if it's required
-    sponsorStatus: '' // provide a value for this property if it's required
+    approvalStatus: formData.get('approvalStatus') as string,
+    lifeMember: formData.get('lifeMember') as string,
+    sponsorStatus:formData.get('sponsorStatus') as string,
 };
 
 

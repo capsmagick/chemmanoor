@@ -26,6 +26,8 @@
     onDestroy(() => {
         unsubscribe();
     });
+
+    console.log('UserStore:', $UserStore);
 </script>
 
 <div class="m-20 max-w-screen-md rounded-xl bg-white p-10 shadow-md hover:shadow-lg">
@@ -81,7 +83,7 @@
                         id="firstName"
                         type="text"
                         name="firstName"
-                        value={$userData.firstName}
+                        bind:value={$userData.firstName}
                         placeholder="First Name"
                         class="max-w-xs"/>
                 </div>
@@ -93,7 +95,7 @@
                         id="middleName"
                         type="text"
                         name="middleName"
-                        value={$userData.middleName}
+                        bind:value={$userData.middleName}
                         placeholder="Middle Name"
                         class="max-w-xs"
                     />
@@ -104,7 +106,7 @@
                         id="lastName"
                         type="text"
                         name="lastName"
-                        value={$userData.lastName}
+                        bind:value={$userData.lastName}
                         placeholder="Last Name"
                         class="max-w-xs"
                     />
@@ -118,7 +120,7 @@
                     <Input
                         id="dateOfBirth"
                         name="dateOfBirth"
-                        value={$userData.dob}
+                        bind:value={$userData.dob}
                         type="date"
                         placeholder="Date of Birth"
                         class="max-w-xs"/>
@@ -131,7 +133,7 @@
                         id="occupation"
                         name="occupation"
                         type="text"
-                        value={$userData.occupation}
+                        bind:value={$userData.occupation}
                         placeholder="occupation"
                         class="max-w-xs"/>
                 </div>
@@ -141,19 +143,24 @@
                     </label>
                     <select
                         id="relationshipStatus"
+                        name="relationshipStatus"
                         class="block w-full max-w-xs rounded-md border-2 border-gray-300 py-2 text-base
-                        focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                        focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        bind:value={$UserStore.relationshipStatus}>
                         <option value="">Select</option>
                         <option value="single">Single</option>
                         <option value="married">Married</option>
                         <option value="divorced">Divorced</option>
                         <option value="widowed">Widowed</option>
                     </select>
+                {console.log('Relationship Status:', $UserStore.relationshipStatus)}
+                
                 </div>
                 <div class="self-center">
                         <label for="late" class="mt-4 flex space-x-2">
                             <input
                                 id="late"
+                                name="late"
                                 type="checkbox"
                                 class="rounded text-indigo-600 focus:ring-indigo-500"/>
                             <span class="text-sm font-medium text-gray-700"> Late </span>
@@ -163,35 +170,58 @@
 
             <div class="flex flex-nowrap items-stretch space-x-4">
                 <div>
-                    <label for="phoneNumber" class="block text-sm font-medium text-gray-700">
+                    <label for="phoneNumber" 
+                    class="block text-sm font-medium text-gray-700">
                         Phone Number
                     </label>
-                    <Input id="phoneNumber" value={$userData.phone} 
-                    type="tel" name="phoneNumber" placeholder="Phone Number" class="max-w-xs" />
+                    <Input id="phoneNumber" 
+                    bind:value={$userData.phone} 
+                    type="tel" 
+                    name="phoneNumber" 
+                    placeholder="Phone Number" 
+                    class="max-w-xs" />
                 </div>
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700"> Email </label>
-                    <Input value={$userData.email} 
-                    id="email" name="email" type="email" placeholder="Email" class="max-w-xs" />
+                    <label for="email" 
+                    class="block text-sm font-medium text-gray-700"> Email </label>
+                    <Input 
+                    bind:value={$userData.email} 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    placeholder="Email" 
+                    class="max-w-xs"/>
                 </div>
             </div>
             <div class="grid grid-cols-4 gap-4">
                 {#if $UserStore.relationshipStatus === 'married'}
                 <div>
-                    <label for="dateOfMarriage" class="block text-sm font-medium text-gray-700">
+                    <label for="dateOfMarriage" 
+                    class="block text-sm font-medium text-gray-700">
                         Date of Marriage
                     </label>
-                    <Input value={$userData.dateOfMarriage} 
-                    id="dateOfMarriage" type="date" placeholder="Date of Marriage" class="max-w-xs" />
+                    <Input 
+                    bind:value={$userData.dateOfMarriage} 
+                    id="dateOfMarriage" 
+                    name="dateOfMarriage"
+                    type="date" 
+                    placeholder="Date of Marriage" 
+                    class="max-w-xs"/>
                 </div>
                 {/if} 
                 {#if $UserStore.late}
                 <div>
-                    <label for="dateOfDeath" class="block text-sm font-medium text-gray-700">
+                    <label for="dateOfDeath" 
+                    class="block text-sm font-medium text-gray-700">
                         Date of Death
                     </label>
-                    <Input value={$userData.dateOfDeath}
-                    id="dateOfDeath" type="date" placeholder="Date of Death" class="max-w-xs" />
+                    <Input 
+                    bind:value={$userData.dateOfDeath}
+                    id="dateOfDeath" 
+                    name="dateOfDeath" 
+                    type="date" 
+                    placeholder="Date of Death" 
+                    class="max-w-xs" />
                 </div>
                 {/if}
             </div>
