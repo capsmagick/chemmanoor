@@ -3,12 +3,11 @@ import {arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import type { Writable } from 'svelte/store';
 import type { UserData } from '$lib/stores/data';
 import {db, auth,storage} from '$lib/firebase/firebase.client'
-import { ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref as storageRef, uploadBytesResumable, uploadBytes, getDownloadURL, ref, getStorage } from "firebase/storage";
 import { selecteduser } from '$lib/stores/data';
 import { get } from 'svelte/store';
 import type {FamilyData} from '$lib/stores/data';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-
+import { collection, query, where, getDocs, getFirestore, addDoc } from 'firebase/firestore';
 
 /**
  * Initializes Firebase if it hasn't been initialized yet.
@@ -468,3 +467,57 @@ export async function populate(store: Writable<any>, collection: string): Promis
     }
 }
 
+//addUserAdmin
+
+export async function handleFormSubmit(event: Event) {
+  event.preventDefault();
+
+  const formData = new FormData(event.target as HTMLFormElement);
+  const profilePhoto = formData.get('profilePhoto') as File;
+
+  const newData: UserData = {
+    userID: '', // provide a value for this property
+    prefix: formData.get('prefix') as string,
+    firstName: formData.get('firstName') as string,
+    middleName: formData.get('middleName') as string,
+    lastName: formData.get('lastName') as string,
+    profilePicture: '', // provide a value for this property
+    dob: formData.get('dateOfBirth') as string,
+    occupation: formData.get('occupation') as string,
+    relationshipStatus: '', // provide a value for this property if it's required
+    late: '', // provide a value for this property if it's required
+    phone: formData.get('phoneNumber') as string,
+    email: formData.get('email') as string,
+    dateOfMarriage: '', // provide a value for this property if it's required
+    dateOfDeath: '', // provide a value for this property if it's required
+    chart: formData.get('chartNumber') as string,
+    gen: formData.get('generation') as string,
+    index: formData.get('index') as string,
+    approvalStatus: '', // provide a value for this property if it's required
+    lifeMember: '', // provide a value for this property if it's required
+    sponsorStatus: '' // provide a value for this property if it's required
+};
+
+
+  if (profilePhoto) {
+      const storage = getStorage();
+      const timestamp = new Date().getTime();
+      const filename = `${timestamp}_${profilePhoto.name}`;
+      const storageRef = ref(storage, `profilePictures/${filename}`);
+      await uploadBytes(storageRef, profilePhoto);
+
+      const profilePhotoURL = await getDownloadURL(storageRef);
+      newData.profilePicture = profilePhotoURL;
+  }
+
+  try {
+      const firestore = getFirestore();
+      const usersCollection = collection(firestore, 'Users');
+      await addDoc(usersCollection, newData);
+      console.log('User added successfully!');
+      // You can optionally reset the form here
+  } catch (error) {
+      console.error('Error adding user:', error);
+      formMessage.set('Error adding user');
+  }
+}

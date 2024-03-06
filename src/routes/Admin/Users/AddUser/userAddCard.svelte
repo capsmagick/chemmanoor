@@ -2,67 +2,30 @@
     import { Input } from '$lib/components/ui/input';
     import Button from '$lib/components/ui/button/button.svelte';
     import FamilyIDSelector from '$lib/components/ui/familyIDSelector/familyIDSelector.svelte';
-    import { UserStore, prefixOptions, formMessage } from '$lib/stores/data';
-    import { getFirestore, collection, addDoc } from 'firebase/firestore';
-    import { uploadBytes, getDownloadURL, ref, getStorage } from 'firebase/storage';
+    import { isCustomSelected, UserStore, prefixOptions, formMessage } from '$lib/stores/data';
+    import { handleFormSubmit } from '$lib/Functions/dataHandlers'; // Import form submission function
+    import { onDestroy } from 'svelte';
 
     let userData = UserStore;
-    let formSubmitting = false;
+    let showMessage = false;
+    let customPrefix = '';
+    let unsubscribe: () => void;
 
-    interface UserData {
-        firstName: string;
-        middleName: string;
-        lastName: string;
-        dob: string;
-        occupation: string;
-        phone: string;
-        email: string;
-        chart: string;
-        gen: string;
-        index: string;
-        profilePicture?: string;
+    $: {
+        unsubscribe = formMessage.subscribe(value => {
+            if (value) {
+                showMessage = true;
+                setTimeout(() => {
+                    showMessage = false;
+                    formMessage.set('');
+                }, 5000);
+            }
+        });
     }
 
-    async function handleFormSubmit(event: Event) {
-        event.preventDefault();
-
-        const formData = new FormData(event.target as HTMLFormElement);
-        const profilePhoto = formData.get('profilePhoto') as File;
-
-        const newData: UserData = {
-            firstName: formData.get('firstName') as string,
-            middleName: formData.get('middleName') as string,
-            lastName: formData.get('lastName') as string,
-            dob: formData.get('dateOfBirth') as string,
-            occupation: formData.get('occupation') as string,
-            phone: formData.get('phoneNumber') as string,
-            email: formData.get('email') as string,
-            chart: formData.get('chart') as string,
-            gen: formData.get('gen') as string,
-            index: formData.get('index') as string,
-        };
-
-        if (profilePhoto) {
-            const storage = getStorage();
-            const timestamp = new Date().getTime();
-            const filename = `${timestamp}_${profilePhoto.name}`;
-            const storageRef = ref(storage, `profilePictures/${filename}`);
-            await uploadBytes(storageRef, profilePhoto);
-
-            const profilePhotoURL = await getDownloadURL(storageRef);
-            newData.profilePicture = profilePhotoURL;
-        }
-
-        try {
-            const firestore = getFirestore();
-            const usersCollection = collection(firestore, 'Users');
-            await addDoc(usersCollection, newData);
-            console.log('User added successfully!');
-            // You can optionally reset the form here
-        } catch (error) {
-            console.error('Error adding user:', error);
-        }
-    }
+    onDestroy(() => {
+        unsubscribe();
+    });
 </script>
 
 <div class="m-20 max-w-screen-md rounded-xl bg-white p-10 shadow-md hover:shadow-lg">
@@ -98,16 +61,17 @@
 
                     <select
                         class=" block w-full max-w-xs rounded-md border-2 border-gray-300 py-2 text-base
-                        focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+                        focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+                        bind:value={$UserStore.prefix} id="prefix" name="prefix">
                         {#each $prefixOptions as option}
                             <option value={option}>{option}</option>
                         {/each}
                         <option value="other">Custom</option>
                     </select>
 
-                    <!-- {#if $isCustomSelected} -->
-                        <Input placeholder="Enter Custom Prefix" />
-                    <!-- {/if} -->
+                    {#if $isCustomSelected}
+                        <Input bind:value={customPrefix} placeholder="Enter Custom Prefix" />
+                    {/if}
                 </div>
                 <div>
                     <label for="firstName" class="block text-sm font-medium text-gray-700">
@@ -241,4 +205,7 @@
             <p class="mt-2 text-sm">{$formMessage}</p>
         </div>
     </form>
+    {#if showMessage}
+        <p class="mt-2 text-sm">{$formMessage}</p>
+    {/if}
 </div>
