@@ -193,7 +193,7 @@ export async function uploadImage(file: File): Promise<void> {
   }
 
 export async function checkUserOnboard(store: Writable<any>): Promise<void> {
-   
+  //  debugger;
     const user = auth.currentUser;
     
     if(user){
@@ -218,6 +218,29 @@ export async function checkUserOnboard(store: Writable<any>): Promise<void> {
 
     }
 }
+
+export async function checkUserOnboardByUserId(userId: string): Promise<void> {
+  try {
+      let userData = { UserID: userId };
+
+      if (userData) {
+        UserOnboard.set(userData);
+        selecteduser.set(userData.UserID);
+        let familyData = await readDocument<{ myself: string, father: string, mother: string, lifepartner: string, children: string[] }>("myFamily", userData.UserID);
+        if (familyData === null) {
+          // Provide a default value for familyData if null
+          familyData = { myself: '', father: '', mother: '', lifepartner: '', children: [] };
+        }
+        FamilyStore.set(familyData);
+      } else {
+        // Handle the null case, for example, by setting a default value or showing an error message
+        console.error("User data is null");
+      }
+  } catch (error) {
+      console.error('Error checking user onboard:', error);
+  }
+}
+
 export function resetStores() {
   // Assuming all stores are imported and are of type Writable<any>
   // Replace 'StoreName' with actual store names from your data.ts
@@ -327,7 +350,7 @@ export async function updateMyFamilyCollection(userId: string, memberTypeOrUniqu
  * @param UserID The UserID to check or create in the Users collection.
  */
 export async function handleUserDocument(UserID: string): Promise<void> {
-    
+  debugger;
     let userData = await readDocument("Users", UserID);
     if (!userData) {
         const initialUserData = {
