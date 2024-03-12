@@ -40,6 +40,14 @@
     <div class="justify-self-center my-8">
         <slot />
     </div>
+	
+	<div class="justify-self-center my-8">
+		<div class="bg-white rounded-lg shadow p-6">
+			<h2 class="text-2xl font-bold mb-4">About Us</h2>
+			<p class="text-lg">We are a team of passionate developers dedicated to creating high-quality software solutions.</p>
+		</div>
+	</div>
+    
 	<div class="flex justify-center sticky top-[100vh] items-end w-full ">
 		<Footer />
 	</div>

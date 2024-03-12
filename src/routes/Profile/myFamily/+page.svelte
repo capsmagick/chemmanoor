@@ -57,7 +57,7 @@
       
       fetchPrefixData();
       checkUserOnboard(); 
-      loadDataIntoUserStore();
+      
       
     }
   });

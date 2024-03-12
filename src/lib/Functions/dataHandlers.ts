@@ -204,6 +204,7 @@ export async function checkUserOnboard(store: Writable<any>): Promise<void> {
         if (userData) {
           UserOnboard.set(userData);
           selecteduser.set(userData.UserID);
+          loadDataIntoUserStore(get(selecteduser));
           let familyData = await readDocument<{ myself: string, father: string, mother: string, lifepartner: string, children: string[] }>("myFamily", userData.UserID);
           if (familyData === null) {
             // Provide a default value for familyData if null
@@ -362,6 +363,7 @@ export async function handleUserDocument(UserID: string): Promise<void> {
 
 export async function handleSelectChange(event: Event) {
     const selectedValue = (event.target as HTMLSelectElement).value;
+    console.log(`Selected value: ${selectedValue}`);
     const userOnboard = get(UserOnboard); // Use get to access the value of the Svelte store
     const userID = userOnboard.UserID; // Assuming this is the ID of the current user's family document
     const familyStore = get(FamilyStore); 
@@ -416,18 +418,21 @@ export async function handleSelectChange(event: Event) {
         }
       }
     }
-    loadDataIntoUserStore();
+    loadDataIntoUserStore(get(selecteduser));
      // Load the selected user's data into UserStore
   }
- export async function loadDataIntoUserStore() {
-    const userID = get(selecteduser); 
-    // Assuming selecteduser is a writable store containing the user's ID
-    console.log('User ID:', userID);
+
+ export async function loadDataIntoUserStore(userID:string) {
+    
     if (!userID) {
       console.error("No user ID provided");
       return;
-    }
-    await handleUserDocument(userID);
+    }else{
+      console.log('User ID:', userID);
+    let userData = await readDocument("Users", userID);
+    UserStore.set(userData as UserData);
+
+    }  
   }
   export async function addNewFamilyMember(userID: string, memberType: string) {
     const uniqueId = generateUniqueId();
