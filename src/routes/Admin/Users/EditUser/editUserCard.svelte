@@ -10,7 +10,7 @@
            fetchPrefixData,
            submitForm,
            handleSelectChange,
-           loadDataIntoUserStore } from '$lib/Functions/dataHandlers';
+           checkUserOnboardByUserId} from '$lib/Functions/dataHandlers';
   import { onDestroy } from 'svelte';
   import * as Select from '$lib/components/ui/select';
   import { Input } from '$lib/components/ui/input';
@@ -40,29 +40,41 @@
   const lmBadge : string = lifeMemberBandge
   
   
-  //export let data: PageData;
   let user;
   let customPrefix = '';
   let isLoading = false;
   let showMessage = false;
   let unsubscribe: () => void;
 
-  
-  
- 
   onMount(async () => {
-
-    user =  auth.currentUser;
-    if (user) {
-      
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    if (userId) {
+      selecteduser.set(userId);
+      await loadDataIntoUserStore(userId);
       fetchPrefixData();
-      checkUserOnboard(); 
-      
-      
+      // checkUserOnboard(); 
+      await checkUserOnboardByUserId(userId);
+    } else {
+      console.error('No user ID provided');
     }
   });
- 
 
+  async function loadDataIntoUserStore(userId: string) {
+  try {
+    const userDocRef = doc(db, 'Users', userId);
+    const userDocSnapshot = await getDoc(userDocRef);
+    if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data();
+      UserStore.set(userData);
+    } else {
+      console.log('User document does not exist');
+    }
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+}
+ 
   async function handleFormSubmit() {
     const fileInput = document.getElementById('profilePhoto') as HTMLInputElement;
   
@@ -107,9 +119,7 @@
   <label for="familyMember" class="block text-sm font-medium text-gray-700">Select Family Member</label>
   <select id="familyMember"  
           on:change={handleSelectChange} 
-          class="max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-    
-    
+          class="max-w-xs border-2 block w-full py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">   
     <option value="myself">Myself</option>
     <option value="mother">Mother</option>
     <option value="father">Father</option>
@@ -149,10 +159,6 @@
     {/if}
     </div>
 
-
-
-
-
 </div>
 
   <div class="flex flex-col space-y-4">
@@ -168,7 +174,6 @@
           </label>
         
         <div ml-10>
-        
             <FamilyIDSelector  
             bind:chartNumberSelection={$UserStore.chart} 
             bind:generationSelection={$UserStore.gen} 
@@ -266,23 +271,16 @@
         <label for="dateOfDeath" class="block text-sm font-medium text-gray-700">Date of Death</label>
         <Input id="dateOfDeath" bind:value={$UserStore.dateOfDeath} type="date" placeholder="Date of Death" class="max-w-xs" />
       </div>
-      {/if}
-      
-     
+      {/if}       
     </div>
-  
- 
     <div class="grid grid-cols-4 gap-4">
       <Button class= 'max-w-xs' type="submit" on:click={() => { isLoading = true ; formMessage.set(''); handleFormSubmit(); }}>Update</Button>
       {#if isLoading}
           <div class="ml-5 animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-gray-900"></div>
       {/if}
-      
   </div>
   {#if showMessage}
   <p class="text-sm mt-2">{$formMessage}</p>
 {/if}
- 
 </form>
 </div>
-
