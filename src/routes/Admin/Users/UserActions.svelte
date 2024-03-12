@@ -4,22 +4,27 @@
     import { goto } from "$app/navigation";
     // import { DotsVertical } from "radix-icons-svelte";
     import { DotSquare } from "lucide-svelte";
+    import { removeUser } from "./userUtils";
     export let id: string;
 
     function handleEditClick() {
-    // Navigate to the Edit User page
-    goto(`/Admin/Users/EditUser`);
+      // Navigate to the Edit User page
+      goto(`/Admin/Users/EditUser?userId=${id}`);
     }
-    
+
+    function confirmRemoveUser() {
+        removeUser(id);
+    }
+
   </script>
+
   <DropdownMenu.Root>
     <DropdownMenu.Trigger asChild let:builder>
       <Button
         variant="ghost"
         builders={[builder]}
         size="icon"
-        class="relative w-8 h-8 p-0"
-      >
+        class="relative w-8 h-8 p-0">
         <span class="sr-only">Open menu</span>
         <DotSquare class="w-4 h-4" />
       </Button>
@@ -34,6 +39,6 @@
       </DropdownMenu.Group>
       <DropdownMenu.Separator />
       <DropdownMenu.Item>View User</DropdownMenu.Item>
-      <DropdownMenu.Item>Remove User</DropdownMenu.Item>
+      <DropdownMenu.Item on:click={confirmRemoveUser}>Remove User</DropdownMenu.Item>
     </DropdownMenu.Content>
   </DropdownMenu.Root>

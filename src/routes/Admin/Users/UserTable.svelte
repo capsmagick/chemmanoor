@@ -2,18 +2,18 @@
   import { createTable, Render, Subscribe } from "svelte-headless-table";
   import { addPagination, addSortBy, addTableFilter, addHiddenColumns, addSelectedRows } 
   from "svelte-headless-table/plugins";
-  import { readable } from "svelte/store";
   import * as Table from "$lib/components/ui/table";
   import DataTableActions from "./UserActions.svelte";
   import { Button } from "$lib/components/ui/button";
-  import { ChevronDown, SortDesc } from "lucide-svelte";
+  import { ChevronDown, Plus, SortDesc } from "lucide-svelte";
   import { Input } from "$lib/components/ui/input";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import UserAdminCheckBox from "./UserAdminCheckBox.svelte";
-  import { getFirestore, collection, getDocs } from 'firebase/firestore';
+  import { getFirestore, collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { createRender } from 'svelte-headless-table';
+  import { goto } from "$app/navigation";
 
   // Define the UserData type
   type UserData = {
@@ -41,6 +41,16 @@
       hide: addHiddenColumns(),
       select: addSelectedRows()
   };
+
+  export async function removeUser(userId: string) {
+    try {
+      const firestore = getFirestore();
+      await deleteDoc(doc(firestore, 'Users', userId));
+      console.log('User removed successfully!');
+    } catch (error) {
+      console.error('Error removing user:', error);
+    }
+  }
 
   // Function to fetch data from Firestore
   async function printFirestoreCollection() {
@@ -74,9 +84,6 @@
 
   // Create the table using the data store and configuration
   let table = createTable(dataStore, tableConfig);
-
-  console.log('Data Store:', dataStore);
-  console.log('Table:', table);
 
   // Define columns for the table
   const columns = table.createColumns([
@@ -112,7 +119,8 @@
             }
       }),
       table.column({
-          accessor: ({ prefix, firstName, middleName, lastName }) => `${prefix}. ${firstName} ${middleName} ${lastName}`.trim(),
+          accessor: ({ prefix, firstName, middleName, lastName }) => 
+          `${prefix}. ${firstName} ${middleName} ${lastName}`.trim(),
           header: "Name"
       }),
       table.column({
@@ -156,7 +164,8 @@
   ]);
 
   // ViewModel for the table
-  const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns, rows } = table.createViewModel(columns);
+  const { headerRows, pageRows, tableAttrs, tableBodyAttrs, pluginStates, flatColumns, rows } 
+  = table.createViewModel(columns);
 
   const { hasNextPage, hasPreviousPage, pageIndex } = pluginStates.page;
   const { filterValue } = pluginStates.filter;
@@ -177,7 +186,13 @@
 <div>
   <div class="flex items-center py-4">
       <div>
-          <Input class="max-w-sm bg-white" placeholder="Filter email..." type="text" bind:value={$filterValue}/>
+        <Button variant="outline" class="ml-auto" name="addUser" on:click={()=>{goto('/Admin/Users/AddUser')}}>
+            Add User <Plus class="h-4 w-4 mr-2"/>
+        </Button>
+      </div>
+      <div class="pl-4">
+          <Input class="max-w-sm bg-white" placeholder="Filter email..." type="text" 
+          bind:value={$filterValue}/>
       </div>
       <DropdownMenu.Root>
           <DropdownMenu.Trigger asChild let:builder>
